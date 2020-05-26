@@ -10,7 +10,7 @@ data Sc=Gl|Lo deriving(Eq,Show);pattern R x=Right x;pattern Er x=Left x;pattern 
 (∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;sw=show;trv=traverse;seqA=sequenceA
 rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."⊗);wow=φ∘R;such=wow; meh=error"xkcd.com/292"
 
-k0=A∘N∘J$0;k1=A∘N∘J$1;kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];ksp=A∘C$'\SP';kca=A∘C$'A';kfoo=Ls$A∘C<$>"foo"
+k0=A∘N∘J$0;k1=A∘N∘J$1;kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];[ksp,kca]=A∘C<$>" A";[kes,kfoo]=A∘C<∘>["","foo"]<&>Ls
 kid=Fun∘Lam["x"]$Var"x";kadd=Fun∘Lam xy∘Ap(Fun$Op(:+))$Var<$>xy where xy=π<$>"xy"
 
 run::ΓΓ->E->S+E; run z=fst<∘>run' z; run' z e=ev e`runStateT`((Gl,)<∘>z)
@@ -49,7 +49,7 @@ class Ix'd a where{kvs::a->[(E,E)]}; instance Ix'd[E]where kvs=zip$A∘N∘η<$>
 
 iot(A(N(J i)))|i<0=er"dom"|T=wow∘Ls$A∘N∘J<$>[0..i-1];iot Ls{}=nyi"odo";iot _=er"typ"
 tak(A(N(J i)))|i>=0=wow∘Ls∘take(η i)∘cycl|T=such∘Ls∘rev∘take(-η i)∘rev;tak _=π$nyi"#₂case"; cycl[]=[];cycl x=cycle x
-frt(Ls[])=nyi"*()";frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
+frt(Ls' x[])=wow∘maybe kes id$x;frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
 siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank"
 
 
