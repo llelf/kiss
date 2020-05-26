@@ -28,8 +28,8 @@ elam::[V]->E->[E]->M E
 elam v b x|len v/=len x=nyi"part-λ"|T=do{seqA∘zipWith(setV Lo)v$x;r<-ev b;modify∘filter$(/=Lo)∘fst∘snd;π r}
 
 eop::Op->[E]->M E
-eop(:+) [x,y]=a2(φn"+"(+))x y;   eop(:#) [x]=φ$siz x;    eop(:#)[x,Ls y]=tak x y
-eop(:*) [x,y]=a2(φn"*"(*))x y;   eop(:!) [x]=iot x;
+eop(:+) [x,y]=a2(φn"+"(+))x y;                            eop(:#)[x]=φ$siz x;     eop(:#)[x,Ls y]=tak x y
+eop(:*) [x,y]=a2(φn"*"(*))x y;   eop(:*) [x]=frt x;       eop(:!)[x]=iot x;
 eop(:-) [x,y]=a2(φn"-"(-))x y;   eop(:-) [x]=a1(-^)x;       
 eop(:..)[x,y]=jin x y;           eop(:..)[x]=wow∘Ls$[x];
 eop o x=nyi$fmt"op:%s/%d"(sw o)(len x)
@@ -49,7 +49,7 @@ class Ix'd a where{kvs::a->[(E,E)]}; instance Ix'd[E]where kvs=zip$A∘N∘η<$>
 
 iot(A(N(J i)))|i<0=er"dom"|T=wow∘Ls$A∘N∘J<$>[0..i-1];iot Ls{}=nyi"odo";iot _=er"typ"
 tak(A(N(J i)))|i>=0=wow∘Ls∘take(η i)∘cycl|T=such∘Ls∘rev∘take(-η i)∘rev;tak _=π$nyi"#₂case"; cycl[]=[];cycl x=cycle x
-jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
+frt(Ls[])=nyi"*()";frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
 siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank"
 
 
