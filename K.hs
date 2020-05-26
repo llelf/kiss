@@ -43,6 +43,9 @@ instance Num N where(+)=ltn2(+);(-)=ltn2(-);(*)=ltn2(*);abs=ltn abs;signum=ltn s
 ltn::(∀a.Num a=>a->a)->_;ltn(+)(J a)=J$(+)a;ltn(+)(O a)=O$(+)a
 ltn2::(∀a.Num a=>a->a->a)->_;ltn2(+)=z where z(O a)(O b)=O a+O b;z(O a)(J b)=O$a+η b;z(J a)(O b)=O$η a+η b;z(J a)(J b)=J$a+b
 φn::S->(N->_)->E->E->M E;φn _(×)(A(N a))(A(N b))=π∘A∘N$a×b;φn s _ _ _=er$s⊗"₂.¬num";(-^)(A(N a))=π∘A∘N$(-a);(-^)_=er"-₁.¬num"
+nup::N->N->N;nup(O a)_=O a;nup(J a)(O b)=O∘η$a;nup(J a)(J b)=J a
+
+
 
 class Ix'd a where{kvs::a->[(E,E)]}; instance Ix'd[E]where kvs=zip$A∘N∘η<$>[0..]
 --pattern Ix'd<-(isIx'd->T);isIx'd Ls{}=T;isIx'd Dic{}=T;isIx'd _=False
