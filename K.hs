@@ -4,8 +4,8 @@ module K where
 import Data.Int;import Data.List;import Text.Printf(printf);import Data.Function;import Data.Functor
 import A;import P(ps);         import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
 
-type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type M=StateT Σ((+)S);type(+)=Either
-data Sc=Gl|Lo deriving(Eq,Show);pattern R x=Right x;pattern Er x=Left x;pattern T=True::Bool
+type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type(+)=Either;data Sc=Gl|Lo deriving(Eq,Show)
+type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool; pattern F=False
 
 (∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;sw=show;trv=traverse;seqA=sequenceA
 rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."⊗);wow=φ∘R;such=wow; meh=error"xkcd.com/292"
@@ -19,7 +19,10 @@ getV'::V->M(Sc,E); getV' v=get>>=φ∘maybe(Er"var")R∘lookup v; getV::V->M E;g
 setV::Sc->V->E->M E; setV s v x=x<$modify((e:)∘deleteBy((==)`on`fst)e) where e=(v,(s,x))
 
 ev::E->M E; ev(Seq x)=last<$>trv ev x;ev(Ls x)=Ls∘rev<$>trv ev(rev x);ev(Ap f x)=do{b<-rev<$>trv ev(rev x);a<-ev f;eap a b}
-ev(Ass v e)=do{(s,_)<-getV' v;ev e>>=setV s v};ev(Var v)=getV v;ev x=wow x
+ev(Cond[c,a,b])=do{i<-ev c;ev$if ist i then a else b};ev Cond{}=nyi"¬3.cond";ev(Ass v e)=do{(s,_)<-getV' v;ev e>>=setV s v}
+ev(Var v)=getV v;ev x=wow x
+
+ist::E->B;ist(A(N x))=x/=0;ist(Ls[])=F;ist Ls{}=T
 
 eap::E->[E]->M E; eap(Fun(Op o))a=eop o a;eap(Fun(Lam v e))a=elam v e a
 eap(Fun(Adv'd Fold e))[a]=efld e a;eap Fun{} _=nyi"fun.smth";
