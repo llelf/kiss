@@ -10,8 +10,8 @@ data Sc=Gl|Lo deriving(Eq,Show);pattern R x=Right x;pattern Er x=Left x;pattern 
 (∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;sw=show;trv=traverse;seqA=sequenceA
 rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."⊗);wow=φ∘R;such=wow; meh=error"xkcd.com/292"
 
-k0=A∘N∘J$0;k1=A∘N∘J$1;kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];ksp=A∘C$'\SP';kca=A∘C$'A';kfoo=Ls$A∘C<$>"foo"
-kid=Fun∘Lam["x"]$Var"x";kadd=Fun∘Lam xy∘Ap(Fun$Op(:+))$Var<$>xy where xy=π<$>"xy"
+k0=A∘N$0;k1=A∘N$1;kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];k_2=Ls[Ls[k1,k0],k01];[ksp,kca]=A∘C<$>" A";kfoo=Ls$A∘C<$>"foo"
+kid=Fun∘Lam["x"]$Var"x";kadd=Fun∘Lam xy∘Ap(fop(:+))$Var<$>xy where{xy=π<$>"xy"};fop=Fun∘Op
 
 run::ΓΓ->E->S+E; run z=fst<∘>run' z; run' z e=ev e`runStateT`((Gl,)<∘>z)
 
@@ -21,11 +21,13 @@ setV::Sc->V->E->M E; setV s v x=x<$modify((e:)∘deleteBy((==)`on`fst)e) where e
 ev::E->M E; ev(Seq x)=last<$>trv ev x;ev(Ls x)=Ls∘rev<$>trv ev(rev x);ev(Ap f x)=do{b<-rev<$>trv ev(rev x);a<-ev f;eap a b}
 ev(Ass v e)=do{(s,_)<-getV' v;ev e>>=setV s v};ev(Var v)=getV v;ev x=wow x
 
-eap::E->[E]->M E; eap(Fun(Op o))a=eop o a;eap(Fun(Lam v e))a=elam v e a;eap(Fun(Adv'd d e))a=nyi"adv"
+eap::E->[E]->M E; eap(Fun(Op o))a=eop o a;eap(Fun(Lam v e))a=elam v e a
+eap(Fun(Adv'd Fold e))[a]=efld e a;eap Fun{} _=nyi"fun.smth";
 eap(Ls l)i=nyi"v@";eap Ap{}_=nyi"part-ap";eap Nil _=nyi"nil@";eap A{}_=er"atm@";eap Var{}_=meh;eap Ass{}_=meh;eap Seq{}_=meh
 
 elam::[V]->E->[E]->M E
 elam v b x|len v/=len x=nyi"part-λ"|T=do{seqA∘zipWith(setV Lo)v$x;r<-ev b;modify∘filter$(/=Lo)∘fst∘snd;π r}
+efld::E->E->M E; efld _ x@(Ls[])=frt x;efld e(Ls(x:y))=foldM(eap e<∘>(∘π)∘(:))x y;efld _ _=nyi"fold.¬ls"
 
 eop::Op->[E]->M E
 eop(:+) [x,y]=a2(φn"+"(+))x y;                            eop(:#)[x]=φ$siz x;     eop(:#)[x,Ls y]=tak x y
