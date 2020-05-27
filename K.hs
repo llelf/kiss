@@ -39,19 +39,19 @@ a1::(E->M E)->E->M E; a1 f(Ls a)=Ls<$>trv(a1 f)a; a1 f a=f a
 a2::(E->E->M E)->E->E->M E; a2 f(Ls a)(Ls b)|len a==len b=Ls<∘>seqA$zipWith(a2 f)a b|T=er"⨝.len"
 a2 f a(Ls b)=Ls<$>trv(a2 f a)b;a2 f(Ls a)b=a2(f??)b(Ls a);a2 f a b=f a b
 
-instance Num N where(+)=ltn2(+);(-)=ltn2(-);(*)=ltn2(*);abs=ltn abs;signum=ltn signum;fromInteger=J∘η
+instance Num N where(+)=ltn2(+);(-)=ltn2(-);(*)=ltn2(*);abs=ltn abs;signum=ltn signum;fromInteger=O∘η
 ltn::(∀a.Num a=>a->a)->_;ltn(+)(J a)=J$(+)a;ltn(+)(O a)=O$(+)a
-ltn2::(∀a.Num a=>a->a->a)->_;ltn2(+)=z where z(O a)(O b)=O a+O b;z(O a)(J b)=O$a+η b;z(J a)(O b)=O$η a+η b;z(J a)(J b)=J$a+b
+ltn2::(∀a.Num a=>a->a->a)->_;ltn2(+)=z where z(O a)(O b)=O$a+b;z(O a)(J b)=O$a+η b;z(J a)(O b)=O$η a+η b;z(J a)(J b)=J$a+b
 φn::S->(N->_)->E->E->M E;φn _(×)(A(N a))(A(N b))=π∘A∘N$a×b;φn s _ _ _=er$s⊗"₂.¬num";(-^)(A(N a))=π∘A∘N$(-a);(-^)_=er"-₁.¬num"
-nup::N->N->N;nup(O a)_=O a;nup(J a)(O b)=O∘η$a;nup(J a)(J b)=J a
+nup::N->N->N;nup(O a)_=O a;nup(J a)(O _)=O∘η$a;nup(J a)(J _)=J a
 
 
 
 class Ix'd a where{kvs::a->[(E,E)]}; instance Ix'd[E]where kvs=zip$A∘N∘η<$>[0..]
 --pattern Ix'd<-(isIx'd->T);isIx'd Ls{}=T;isIx'd Dic{}=T;isIx'd _=False
 
-iot(A(N(J i)))|i<0=er"dom"|T=wow∘Ls$A∘N∘J<$>[0..i-1];iot Ls{}=nyi"odo";iot _=er"typ"
-tak(A(N(J i)))|i>=0=wow∘Ls∘take(η i)∘cycl|T=such∘Ls∘rev∘take(-η i)∘rev;tak _=π$nyi"#₂case"; cycl[]=[];cycl x=cycle x
+iot(A(N(O i)))|i<0=er"dom"|T=wow∘Ls$A∘N∘O<$>[0..i-1];iot Ls{}=nyi"odo";iot _=er"typ"
+tak(A(N(O i)))|i>=0=wow∘Ls∘take(η i)∘cycl|T=such∘Ls∘rev∘take(-η i)∘rev;tak _=π$nyi"#₂case"; cycl[]=[];cycl x=cycle x
 frt(Ls[])=nyi"*()";frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
 siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank"
 
