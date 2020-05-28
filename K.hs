@@ -69,9 +69,9 @@ instance PP L   where pp(N(J x))=sw x⊗"j";pp(N(O x))=sw x⊗"o";pp(C c)=fmt"\"
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 
 semi=intercalate";";pr=fmt"(%s)";esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
+arb::Arbitrary a=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
 
-arb::Arbitrary a=>Gen a;arb=arbitrary
 instance Arbitrary L   where arbitrary=N∘J<$>arb
-instance Arbitrary E   where arbitrary=frequency[(4,A<$>arb),(2,Ls<$>arb),(1,Fun<$>arb)]
-instance Arbitrary Fun where arbitrary=Op<$>arb
-instance Arbitrary Op  where arbitrary=elements[minBound..]
+instance Arbitrary E   where arbitrary=frq[(3,A<$>arb),(1,Ls<$>smol arb),(1,Fun<$>arb)]
+instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
+
