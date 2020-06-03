@@ -13,7 +13,7 @@ rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."�
 k0=A∘N$0;k1=A∘N$1;kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];k_2=Ls[Ls[k1,k0],k01];[ksp,kca]=A∘C<$>" A";kfoo=Ls$A∘C<$>"foo"
 kid=Fun∘Lam["x"]$Var"x";kadd=Fun∘Lam xy∘Ap(fop(:+))$Var<$>xy where{xy=π<$>"xy"};fop=Fun∘Op
 
-run::ΓΓ->E->S+E; run z=fst<∘>run' z; run' z e=ev e`runStateT`((Gl,)<∘>z)
+run::ΓΓ->E->S+E; run=(fst<∘>)∘run'; run' z e=ev e`runStateT`((Gl,)<∘>z)
 
 getV'::V->M(Sc,E); getV' v=get>>=φ∘maybe(Er"var")R∘lookup v; getV::V->M E;getV=snd<∘>getV'
 setV::Sc->V->E->M E; setV s v x=x<$modify((e:)∘deleteBy((==)`on`fst)e) where e=(v,(s,x))
@@ -35,7 +35,7 @@ efld::E->E->M E; efld _ x@(Ls[])=frt x;efld e(Ls(x:y))=foldM(eap e<∘>(∘π)�
 eop::Op->[E]->M E
 eop(:+) [x,y]=a2(φn"+"(+))x y;                            eop(:#)[x]=φ$siz x;     eop(:#)[x,Ls y]=tak x y
 eop(:*) [x,y]=a2(φn"*"(*))x y;   eop(:*) [x]=frt x;       eop(:!)[x]=iot x;
-eop(:-) [x,y]=a2(φn"-"(-))x y;   eop(:-) [x]=a1(-^)x;       
+eop(:-) [x,y]=a2(φn"-"(-))x y;   eop(:-) [x]=a1(-^)x;     eop(:<)[x]=φ$gup x
 eop(:..)[x,y]=jin x y;           eop(:..)[x]=wow∘Ls$[x];
 eop o x=nyi$fmt"op:%s/%d"(sw o)(len x)
 
@@ -58,7 +58,7 @@ class Ix'd a where{kvs::a->[(E,E)]}; instance Ix'd[E]where kvs=zip$A∘N∘η<$>
 iot(A(N(O i)))|i<0=er"dom"|T=wow∘Ls$A∘N∘O<$>[0..i-1];iot Ls{}=nyi"odo";iot _=er"typ"
 tak(A(N(O i)))|i>=0=wow∘Ls∘take(η i)∘cycl|T=such∘Ls∘rev∘take(-η i)∘rev;tak _=π$nyi"#₂case"; cycl[]=[];cycl x=cycle x
 frt(Ls[])=nyi"*()";frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
-siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank"
+siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank";gup(Ls a)=R∘Ls$A∘N∘η<$>sortOn(a!!)[0..len a-1];gup _=Er">:typ"
 
 
 class PP α where pp::α->S
