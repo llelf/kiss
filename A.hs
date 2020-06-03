@@ -6,7 +6,7 @@ data E=A L|Ls[E]|{-|Dic[E][E]-}Fun Fun|Var V|Ap E[E]|Ass V E|Cond[E]|Seq[E]|Nil 
 {- ==> E α=A..|L[α]|D[α][α] -}
 
 data L=N N|C C|Sy Sy deriving(Eq,Show);   data Fun=Op Op|Lam[V]E|Adv'd Adv E deriving(Eq,Show)
-data N=J J|O O       deriving(Eq,Show);   data Adv=Fold|Scan|Each|Mod        deriving(Eq,Enum,Show,Bounded)
+data N=J J|O O       deriving(Eq,Show);   data Adv=Fold|Scan|Each            deriving(Eq,Enum,Show,Bounded)
  
 data Op=(:~)|(:!)|(:@)|(:#)|(:$)|(:%)|(:^)|(:&)|(:*)|(:-)|(:=)|(:--)|(:+)|(:..)|(:.)|(:<)|(:>)|(:?)|(:/)|(:\)|(:|)
- deriving(Eq,Enum,Show,Bounded)
+ deriving(Eq,Enum,Read,Show,Bounded)
