@@ -67,7 +67,7 @@ instance PP E   where{pp(A l)=pp l;pp(Var v)=v;pp(Ap(Fun(Op o))[x])=pp o⊗prpf 
                       pp(Ap a x)=fmt"(%s)[%s]"(pp a)$semi$pp<$>x;pp(Ass v e)=fmt"%s:%s"v$pp e;pp(Fun f)=pp f;
                       pp(Ls[x])=',':prpf x;pp(Ls s)=pr∘semi$pp<$>s;pp Nil="";pp(Seq x)=semi$pp<$>x}
 instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(pp x⊗)∘π∘("/\\'"!!)∘fromEnum$a
-instance PP L   where pp(N(J x))=sw x⊗"j";pp(N(O x))=sw x⊗"o";pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
+instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 
 prpf x@Fun{}=pr∘pp$x;prpf x=pp x
