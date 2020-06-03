@@ -62,15 +62,15 @@ siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank";gup(Ls a)=R∘Ls$A∘N∘η<$>so
 
 
 class PP α where pp::α->S
-instance PP E   where{pp(A l)=pp l;pp(Var v)=v;pp(Ap(Fun(Op o))[x])=pp o⊗pp x;
+instance PP E   where{pp(A l)=pp l;pp(Var v)=v;pp(Ap(Fun(Op o))[x])=pp o⊗prpf x;
                       pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p Ls{}=pp x;p x=pr(pp x) in p x⊗pp o⊗pp y;
                       pp(Ap a x)=fmt"(%s)[%s]"(pp a)$semi$pp<$>x;pp(Ass v e)=fmt"%s:%s"v$pp e;pp(Fun f)=pp f;
-                      pp(Ls[x@Fun{}])=',':pr(pp x);pp(Ls[x])=',':pp x;pp(Ls s)=pr∘semi$pp<$>s;
-                      pp Nil="";pp(Seq x)=semi$pp<$>x}
+                      pp(Ls[x])=',':prpf x;pp(Ls s)=pr∘semi$pp<$>s;pp Nil="";pp(Seq x)=semi$pp<$>x}
 instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(pp x⊗)∘π∘("/\\'"!!)∘fromEnum$a
 instance PP L   where pp(N(J x))=sw x⊗"j";pp(N(O x))=sw x⊗"o";pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 
+prpf x@Fun{}=pr∘pp$x;prpf x=pp x
 semi=intercalate";";pr=fmt"(%s)";esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::Arbitrary a=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
 
