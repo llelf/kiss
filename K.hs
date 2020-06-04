@@ -78,7 +78,9 @@ arb::Arbitrary a=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];sm
 ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L
 
 instance Arbitrary L   where arbitrary=N∘O<$>arb; shrink=π[N 0]
-instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,Fun<$>arb),(2,Ap<$>arb<*>smol arb)]
+instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,Fun<$>arb),
+                              (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]<*>frq[(3,(:[])<$>smol arb),(3,(:)<$>smol arb<*>smol arb),
+                                                                       (1,smol arb)])]
                              shrink=genericShrink
 instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms)] -- ,(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
