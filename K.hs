@@ -2,7 +2,7 @@
           ScopedTypeVariables,StandaloneDeriving,TupleSections,TypeApplications,TypeOperators,UnicodeSyntax,ViewPatterns#-}
 module K where
 import Data.Int;import Data.List;import Text.Printf(printf);import Data.Function;import Data.Functor
-import A;import S(ps);         import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
+import A;import qualified P;   import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
 
 type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type(+)=Either;data Sc=Gl|Lo deriving(Eq,Show)
 type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool; pattern F=False
