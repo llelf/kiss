@@ -22,6 +22,7 @@ ev::E->M E; ev(Seq x)=last<$>trv ev x;ev(Ls x)=Ls∘rev<$>trv ev(rev x);ev(Ap f 
 ev(Cond[c,a,b])=do{i<-ev c;ev$if ist i then a else b};ev Cond{}=nyi"¬3.cond";ev(Ass v e)=do{(s,_)<-getV' v;ev e>>=setV s v}
 ev(Var v)=getV v;ev x=wow x
 
+ty::E->Ty;ty(A(N(O _)))=Ta To;ty(A(N(J _)))=Ta Tj;ty(Ls x)|[Ta t]<-nub∘sort$ty<$>x=Tl t|T=TL;ty(Fun _)=TF;ty _=NT
 ist::E->B;ist(A(N x))=x/=0;ist(Ls[])=F;ist Ls{}=T
 
 eap::E->[E]->M E; eap(Fun(Op o))a=eop o a;eap(Fun(Lam v e))a=elam v e a

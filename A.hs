@@ -11,3 +11,5 @@ data N=J J|O O       deriving(Eq,Ord,Show);   data Adv=Fold|Scan|Each           
  
 data Op=(:~)|(:!)|(:@)|(:#)|(:$)|(:%)|(:^)|(:&)|(:*)|(:-)|(:=)|(:--)|(:+)|(:..)|(:.)|(:<)|(:>)|(:?)|(:|)
  deriving(Eq,Ord,Enum,Read,Show,Bounded)
+
+data Ty=Ta TA|Tl TA|TL|TF|NT deriving(Eq,Ord,Show); data TA=Tj|To deriving(Eq,Ord,Show)
