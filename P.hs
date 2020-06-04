@@ -25,8 +25,8 @@ k  (AST.K    _ x)=  ke=<<prj x
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>seq b
-int1(AST.Int1  _ x)=π∘A∘N∘O∘read∘T.unpack$x
-intv(AST.Intv  _ x)=Ls<∘>trv int1∘toList$x
+int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
+intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
 list(AST.List  _ x)=Ls<$>seq x
 
 ap  (AST.Ap _ a f)=Ap<$>ke f<*>seq a
