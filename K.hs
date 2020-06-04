@@ -75,7 +75,9 @@ prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr
 semi=intercalate";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::Arbitrary a=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
 
-instance Arbitrary L   where arbitrary=N∘O<$>arb
-instance Arbitrary E   where arbitrary=frq[(3,A<$>arb),(1,Ls<$>smol arb),(1,Fun<$>arb)]
-instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
+instance Arbitrary L   where arbitrary=N∘O<$>arb; shrink=π[N 0]
+instance Arbitrary E   where arbitrary=frq[(3,A<$>arb),(1,Ls<$>smol arb),(1,Fun<$>arb),(1,Ap<$>arb<*>smol arb)]
+                             shrink=genericShrink
+instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms)] -- ,(1,Adv'd<$>elms<*>arb)]
+                             shrink=π[Op(:*)]
 
