@@ -10,8 +10,8 @@ type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True
 (∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;sw=show;trv=traverse;seqA=sequenceA
 rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."⊗);wow=φ∘R;such=wow; meh=error"xkcd.com/292"
 
-k0=A∘N$0;k1=A∘N$1;kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];k_2=Ls[Ls[k1,k0],k01];[ksp,kca]=A∘C<$>" A";kfoo=Ls$A∘C<$>"foo"
-kid=Fun∘Lam["x"]$Var"x";kadd=Fun∘Lam xy∘Ap(fop(:+))$Var<$>xy where{xy=π<$>"xy"};fop=Fun∘Op
+[k0,k1,k2]=A∘N∘O<$>[0..2];kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];k_2=Ls[Ls[k1,k0],k01];[ksp,kca]=A∘C<$>" A";
+kid=Fun∘Lam["x"]$Var"x";kadd=Fun∘Lam xy∘Ap(fop(:+))$Var<$>xy where{xy=π<$>"xy"};kfoo=Ls$A∘C<$>"foo";fop=Fun∘Op
 
 run::ΓΓ->E->S+E; run=(fst<∘>)∘run'; run' z e=ev e`runStateT`((Gl,)<∘>z)
 
@@ -66,19 +66,20 @@ class PP α where pp::α->S
 instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(pp x⊗)∘π∘("/\\'"!!)∘fromEnum$a
 instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
-instance PP E   where{pp(A l)=pp l;pp(Ls[x])=',':prpf x;pp(Ls s)=pr∘semi$pp<$>s;pp(Fun f)=pp f;pp(Var v)=v;
-                      pp(Ass v e)=fmt"%s:%s"v$pp e;pp(Seq x)=semi$pp<$>x;pp Nil=(∅);
+instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;
+                      pp(Fun f)=pp f;pp(Var v)=v;pp(Ass v e)=fmt"%s:%s"v$pp e;pp(Seq x)=semi$pp<$>x;pp Nil=(∅);
                       pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
                        in prc(o==(:.))(p x)⊗pp o⊗prc(o`elem`[(:-),(:.)])(prpf y);
                       pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=fmt"(%s)[%s]"(pp a)∘semi$pp<$>x}
 
-prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
-semi=intercalate";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
+ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
+semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::Arbitrary a=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
+ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L
 
 instance Arbitrary L   where arbitrary=N∘O<$>arb; shrink=π[N 0]
-instance Arbitrary E   where arbitrary=frq[(3,A<$>arb),(1,Ls<$>smol arb),(1,Fun<$>arb),(1,Ap<$>arb<*>smol arb)]
+instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,Fun<$>arb),(2,Ap<$>arb<*>smol arb)]
                              shrink=genericShrink
 instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms)] -- ,(1,Adv'd<$>elms<*>arb)]
-                             shrink=π[Op(:*)]
+                             shrink=π[Op(:+)]
 
