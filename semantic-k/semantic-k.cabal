@@ -1,0 +1,7 @@
+cabal-version:3.0
+name:semantic-k
+version:0.1
+
+library
+ exposed-modules:AST
+ build-depends:base,template-haskell,ts-k,tree-sitter,semantic,semantic-ast,semantic-source
