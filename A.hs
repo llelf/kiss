@@ -9,5 +9,5 @@ data E=A L|Ls[E]|{-|Dic[E][E]-}Fun Fun|Var V|Ap E[E]|Ass V E|Cond[E]|Seq[E]|Nil|
 data L=N N|C C|Sy Sy deriving(Eq,Ord,Show);   data Fun=Op Op|Lam[V]E|Adv'd Adv E deriving(Eq,Ord,Show)
 data N=J J|O O       deriving(Eq,Ord,Show);   data Adv=Fold|Scan|Each            deriving(Eq,Ord,Enum,Show,Bounded)
  
-data Op=(:~)|(:!)|(:@)|(:#)|(:$)|(:%)|(:^)|(:&)|(:*)|(:-)|(:=)|(:--)|(:+)|(:..)|(:.)|(:<)|(:>)|(:?)|(:/)|(:\)|(:|)
+data Op=(:~)|(:!)|(:@)|(:#)|(:$)|(:%)|(:^)|(:&)|(:*)|(:-)|(:=)|(:--)|(:+)|(:..)|(:.)|(:<)|(:>)|(:?)|(:|)
  deriving(Eq,Ord,Enum,Read,Show,Bounded)
