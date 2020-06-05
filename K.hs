@@ -1,8 +1,8 @@
 {-#language FlexibleInstances,NoMonomorphismRestriction,PartialTypeSignatures,PatternSynonyms,PostfixOperators,RankNTypes,
           ScopedTypeVariables,StandaloneDeriving,TupleSections,TypeApplications,TypeOperators,UnicodeSyntax,ViewPatterns#-}
 module K where
-import Data.Int;import Data.List;import Text.Printf(printf);import Data.Function;import Data.Functor
-import A;import qualified P;   import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
+import A; import Data.Int;import Data.List;import Text.Printf(printf);import Data.Function;import Data.Functor
+import P; import Data.Functor.Identity;  import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
 
 type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type(+)=Either;data Sc=Gl|Lo deriving(Eq,Show)
 type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool; pattern F=False
@@ -85,3 +85,6 @@ instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol ar
 instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms)] -- ,(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
 
+rwE::(E->E)->_; rwE f=f∘plE'(rwE f); plE' f=runIdentity∘plE(Identity∘f)
+plE::_=>(E->p E)->_; plE f=z where{g=trv f; z(Ls x)=Ls<$>g x;z(Ap x y)=Ap<$>f x<*>g y;
+ z(Ass v e)=Ass v<$>f e;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
