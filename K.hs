@@ -86,5 +86,5 @@ instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms)] -- ,(1,Adv'd<$>elms<*>
                              shrink=π[Op(:+)]
 
 rwE::(E->E)->_; rwE f=f∘plE'(rwE f); plE' f=runIdentity∘plE(Identity∘f)
-plE::_=>(E->p E)->_; plE f=z where{g=trv f; z(Ls x)=Ls<$>g x;z(Ap x y)=Ap<$>f x<*>g y;
- z(Ass v e)=Ass v<$>f e;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
+plE::_=>(E->p E)->_; plE f=z where{g=trv f;z(Ls x)=Ls<$>g x;z(Fun(Lam v e))=Fun∘Lam v<$>f e;z(Fun(Adv'd a e))=Fun∘Adv'd a<$>f e;
+ z(Ap x y)=Ap<$>f x<*>g y;z(Ass v e)=Ass v<$>f e;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
