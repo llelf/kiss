@@ -63,7 +63,7 @@ siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank";gup(Ls a)=R∘Ls$A∘N∘η<$>so
 
 
 class PP α where pp::α->S
-instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(pp x⊗)∘π∘("/\\'"!!)∘fromEnum$a
+instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(ppr x⊗)∘π∘("/\\'"!!)∘fromEnum$a
 instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;
@@ -79,10 +79,10 @@ ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L
 
 instance Arbitrary L   where arbitrary=N∘O<$>arb; shrink=π[N 0]
 instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,Fun<$>arb),
-                              (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]<*>frq[(3,(:[])<$>smol arb),(3,(:)<$>smol arb<*>smol arb),
-                                                                       (1,smol arb)])]
+                              (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]
+                                   <*>frq[(3,π<$>smol arb),(3,(:)<$>smol arb<*>smol arb),(1,smol arb)])]
                              shrink=genericShrink
-instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms)] -- ,(1,Adv'd<$>elms<*>arb)]
+instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
 
 rwE::(E->E)->_; rwE f=f∘plE'(rwE f); plE' f=runIdentity∘plE(Identity∘f)
