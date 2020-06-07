@@ -86,8 +86,3 @@ instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol ar
 instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
 
-rwE::(E->E)->_;rwE f=f∘over plE(rwE f);univ a=a:a^.plE∘(∘univ);vars a=[x |Var x<-v a]where v(Fun Lam{})=[];v a=a:a^.plE∘(∘v)
-plE::_=>(E->p E)->_; plE f=z where{g=trv f;z(Ls x)=Ls<$>g x;z(Ass v e)=Ass<$>f v<*>f e;z(Fun(Adv'd a e))=Fun∘Adv'd a<$>f e;
- z(Fun(Lam v e))=Fun∘Lam v<$>f e;z(Ap x y)=Ap<$>f x<*>g y;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
-
-over l f=runIdentity∘l(Identity∘f);view l=getConst∘l Const;(^.)=(view??);infixl 8^.

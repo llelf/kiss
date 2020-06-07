@@ -1,8 +1,8 @@
-{-#language FlexibleInstances,FunctionalDependencies,NoMonomorphismRestriction,TypeApplications#-}
-module P where
-import Prelude hiding(map,seq); import qualified Data.Text as T; import qualified Data.Text.Encoding as T
-import System.IO.Unsafe; import Control.Applicative; import Data.Foldable
-import A; import AST.Unmarshal; import AST.Element; import qualified AST; import TS.K
+{-#language FlexibleInstances,FunctionalDependencies,NoMonomorphismRestriction,TypeApplications,ViewPatterns#-}
+module P (ps,ps',plE,rwE,univ,vars) where
+import Prelude hiding(exp,map,seq); import Data.Functor.Identity;import Data.Functor.Const;import Control.Applicative
+import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import System.IO.Unsafe;import Data.Foldable
+import A;import qualified AST;import TS.K;import AST.Unmarshal;import AST.Element;    import qualified Data.List as L
 
 (∘)=(.);(<∘>)=fmap∘fmap;(?)=(<|>);infixl 0?;trv=traverse;π=pure;nyi=error∘("nyi:"<>)
 
@@ -38,3 +38,8 @@ args Nothing=π[]; args(Just(AST.Args _ x))=trv var'∘toList$x
 var'(AST.Var _ x)=π∘T.unpack$x; var=Var<∘>var'; a'(AST.A _ x)=T.head x
 
 
+rwE::(E->E)->_;rwE f=f∘over plE(rwE f);univ a=a:a^.plE∘(∘univ);vars a=[x |Var x<-v a]where v(Fun Lam{})=[];v a=a:a^.plE∘(∘v)
+plE::_=>(E->p E)->_; plE f=z where{g=trv f;z(Ls x)=Ls<$>g x;z(Ass v e)=Ass<$>f v<*>f e;z(Fun(Adv'd a e))=Fun∘Adv'd a<$>f e;
+ z(Fun(Lam v e))=Fun∘Lam v<$>f e;z(Ap x y)=Ap<$>f x<*>g y;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
+
+over l f=runIdentity∘l(Identity∘f);view l=getConst∘l Const;(^.)=flip view;infixl 8^.
