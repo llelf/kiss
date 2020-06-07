@@ -4,7 +4,7 @@ import Prelude hiding(exp,map,seq); import Data.Functor.Identity;import Data.Fun
 import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import System.IO.Unsafe;import Data.Foldable
 import A;import qualified AST;import TS.K;import AST.Unmarshal;import AST.Element;    import qualified Data.List as L
 
-(∘)=(.);(<∘>)=fmap∘fmap;(?)=(<|>);infixl 0?;trv=traverse;π=pure;nyi=error∘("nyi:"<>)
+(∘)=(.);(<∘>)=fmap∘fmap;(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;π=pure;nyi=error∘("nyi:"<>)
 
 ps ::S->Maybe E;           ps =either(pure Nothing)k∘ps'
 ps'::S->Either S(AST.K()); ps'=unsafePerformIO∘parseByteString @AST.K @() tree_sitter_k∘T.encodeUtf8∘T.pack
@@ -15,8 +15,8 @@ dap(AST.Dap _ a b v)=moap<$>kv v<*>kn a<*>ke b
 map(AST.Map _   a f)=dyap<$>kt f<*>ke a
 cap(AST.Cap _ _)    =nyi"cap"
 
+ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? cap=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.Kn   _ x)=  ap=<<prj x ? parn=<<prj x ? list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
-ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? cap=<<prj x ?      nyi"ke"
 n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ?  var=<<prj x ?       nyi"n"
 kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x ?       nyi"kt"
 kv (AST.Kv   _ x)=   v=<<prj x ?  avd=<<prj x
@@ -25,6 +25,7 @@ k  (AST.K    _ x)=  ke=<<prj x
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>seq b
+exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
 int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
 intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
 list(AST.List  _ x)=Ls<$>seq x
@@ -45,3 +46,5 @@ plE::_=>(E->p E)->_; plE f=z where{g=trv f;z(Ls x)=Ls<$>g x;z(Ass v e)=Ass<$>f v
  z(Fun(Lam v e))=Fun∘Lam v<$>f e;z(Ap x y)=Ap<$>f x<*>g y;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
 
 over l f=runIdentity∘l(Identity∘f);view l=getConst∘l Const;(^.)=flip view;infixl 8^.
+e2lam e=Lam??e$case L.intersect(π<$>"xyz")∘vars$e of[]->[];(maximum->(y:_))->π<$>['x'..y]
+
