@@ -29,6 +29,8 @@ int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
 intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
 list(AST.List  _ x)=Ls<$>seq x
 
+ass (AST.Ass _ e Nothing v)=Ass<$>kn v<*>ke e; ass _=nyi"cmplx.ass"
+
 ap  (AST.Ap _ a f)=Ap<$>ke f<*>seq a
 parn(AST.Parn _ x)=ke=<<prj x
 
