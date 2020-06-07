@@ -68,7 +68,7 @@ instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
-                      pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
+                      pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
                        in prc(o==(:.))(p x)⊗pp o⊗prc(o`elem`[(:-),(:.)])(prpf y);
                       pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=fmt"(%s)[%s]"(pp a)∘semi$pp<$>x}
 
