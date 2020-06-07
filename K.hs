@@ -74,13 +74,14 @@ instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=
 
 ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
 semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
-arb::Arbitrary a=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
-ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elements["x","y","foo"]
+arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
+ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=elements["x","y","foo"]
 
 instance Arbitrary L   where arbitrary=N∘O<$>arb; shrink=π[N 0]
-instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,Fun<$>arb),
+instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,Var<$>avar),(1,Fun<$>arb),
                               (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]
-                                   <*>frq[(3,π<$>smol arb),(3,(:)<$>smol arb<*>smol arb),(1,smol arb)])]
+                                   <*>frq[(3,π<$>smol arb),(3,(:)<$>smol arb<*>smol arb),(1,smol arb)]),
+                              (1,Ass<$>avar<*>arb)]
                              shrink=genericShrink
 instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
