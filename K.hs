@@ -19,8 +19,8 @@ getV'::V->M(Sc,E); getV' v=get>>=φ∘maybe(Er"var")R∘lookup v; getV::V->M E;g
 setV::Sc->V->E->M E; setV s v x=x<$modify((e:)∘deleteBy((==)`on`fst)e) where e=(v,(s,x))
 
 ev::E->M E; ev(Seq x)=last<$>trv ev x;ev(Ls x)=Ls∘rev<$>trv ev(rev x);ev(Ap f x)=do{b<-rev<$>trv ev(rev x);a<-ev f;eap a b}
-ev(Cond[c,a,b])=do{i<-ev c;ev$if ist i then a else b};ev Cond{}=nyi"¬3.cond";ev(Ass v e)=do{(s,_)<-getV' v;ev e>>=setV s v}
-ev(Var v)=getV v;ev x=wow x
+ev(Cond[c,a,b])=do{i<-ev c;ev$if ist i then a else b};ev Cond{}=nyi"¬3.cond";ev(Var v)=getV v
+ev(Ass(Var v)e)=do{(s,_)<-getV' v;ev e>>=setV s v};ev(Ass _ _)=nyi"ass.cmlx";ev x=wow x
 
 ty::E->Ty;ty(A(N(O _)))=Ta To;ty(A(N(J _)))=Ta Tj;ty(Ls x)|[Ta t]<-nub∘sort$ty<$>x=Tl t|T=TL;ty(Fun _)=TF;ty _=NT
 ist::E->B;ist(A(N x))=x/=0;ist(Ls[])=F;ist Ls{}=T
@@ -66,8 +66,8 @@ class PP α where pp::α->S
 instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(ppr x⊗)∘π∘("/\\'"!!)∘fromEnum$a
 instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
-instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;
-                      pp(Fun f)=pp f;pp(Var v)=v;pp(Ass v e)=fmt"%s:%s"v$pp e;pp(Seq x)=semi$pp<$>x;pp Nil=(∅);
+instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
+                      pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
                       pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
                        in prc(o==(:.))(p x)⊗pp o⊗prc(o`elem`[(:-),(:.)])(prpf y);
                       pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=fmt"(%s)[%s]"(pp a)∘semi$pp<$>x}
@@ -75,10 +75,10 @@ instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=
 ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
 semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3)
-ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=elements["x","y","foo"]
+ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elements["x","y","foo"]
 
 instance Arbitrary L   where arbitrary=N∘O<$>arb; shrink=π[N 0]
-instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,Var<$>avar),(1,Fun<$>arb),
+instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,Fun<$>arb),
                               (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]
                                    <*>frq[(3,π<$>smol arb),(3,(:)<$>smol arb<*>smol arb),(1,smol arb)]),
                               (1,Ass<$>avar<*>arb)]
@@ -87,7 +87,7 @@ instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
 
 rwE::(E->E)->_;rwE f=f∘over plE(rwE f);univ a=a:a^.plE∘(∘univ);vars a=[x |Var x<-v a]where v(Fun Lam{})=[];v a=a:a^.plE∘(∘v)
-plE::_=>(E->p E)->_; plE f=z where{g=trv f;z(Ls x)=Ls<$>g x;z(Fun(Adv'd a e))=Fun∘Adv'd a<$>f e;z(Ap x y)=Ap<$>f x<*>g y;
- z(Fun(Lam v e))=Fun∘Lam v<$>f e;z(Ass v e)=Ass v<$>f e;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
+plE::_=>(E->p E)->_; plE f=z where{g=trv f;z(Ls x)=Ls<$>g x;z(Ass v e)=Ass<$>f v<*>f e;z(Fun(Adv'd a e))=Fun∘Adv'd a<$>f e;
+ z(Fun(Lam v e))=Fun∘Lam v<$>f e;z(Ap x y)=Ap<$>f x<*>g y;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x)=Com<$>g x;z x=π x}
 
 over l f=runIdentity∘l(Identity∘f);view l=getConst∘l Const;(^.)=(view??);infixl 8^.
