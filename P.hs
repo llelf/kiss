@@ -15,14 +15,14 @@ dyap f x=Ap f[x]; moap f x y=Ap f[x,y]; comp x y=Com x y
 
 dap(AST.Dap _ a b v)=moap<$>kv v<*>kn a<*>ke b
 map(AST.Map _   a f)=dyap<$>kt f<*>ke a
-cap(AST.Cap _ (Jt a)b _)=comp<$>cap a<*>kv b; cap(AST.Cap _ _ b(Jt a))=comp<$>kt a<*>kv b
+--cap(AST.Cap _ (Jt a)b _)=comp<$>cap a<*>kv b; cap(AST.Cap _ _ b(Jt a))=comp<$>kt a<*>kv b
 
-ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? cap=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
+ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.Kn   _ x)=  ap=<<prj x ? parn=<<prj x ? list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
 n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ?  var=<<prj x ?       nyi"n"
 kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x ?       nyi"kt"
 kv (AST.Kv   _ x)=   v=<<prj x ?  avd=<<prj x
-k  (AST.K    _ x)=  ke=<<prj x
+k  (AST.K    _ x)=  kv=<<prj x ?   ke=<<prj x
 
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
