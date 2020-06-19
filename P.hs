@@ -17,10 +17,19 @@ dam (AST.Dam _ a b  )=dyap<$>(π$Fun$Op(:-))<*>kn a<*>ke b
 dap (AST.Dap _ a b v)=dyap<$>kv v<*>kn a<*>ke b
 map (AST.Map _   a f)=moap<$>kt f<*>ke a
 
+pdap(AST.Pdap _  Nt  a v)=dyap<$>kv v<*>kn a<*>π Nil
+pdap(AST.Pdap _(Jt z)a v)=dyap<$>kv v<*>kn a<*>kpe z
+
+pmap(AST.Pmap _ Nt Nt  (Jt b))=moap<$>v b<*>π Nil
+pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z ? nyi"z=kv?"
+pass(AST.Pass _(Jt e)f v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
+
+kpe(AST.Kpe _ x)=pmap=<<prj x ? pdap=<<prj x ? pass=<<prj x ? nyi"kpe"
+
 ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.Kn   _ x)=  ap=<<prj x ? parn=<<prj x ? list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
 n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ? flt1=<<prj x ? var=<<prj x ?       nyi"n"
-kk (AST.Kk   _ x)=  kv=<<prj x ?   ke=<<prj x ?       nyi"kpe"
+kk (AST.Kk   _ x)=  kv=<<prj x ?   ke=<<prj x ?  kpe=<<prj x
 kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x
 kv (AST.Kv   _ x)=   v=<<prj x ?  avd=<<prj x
 
