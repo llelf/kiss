@@ -11,33 +11,35 @@ pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Eith
 ps ::S->(?)E;      ps""=π Nil; ps s=either(π Nt)k∘ps'$s
 ps'::S->S+AST.K(); ps' =unsafePerformIO∘parseByteString @AST.K @() tree_sitter_k∘T.encodeUtf8∘T.pack
 
-dyap f x=Ap f[x]; moap f x y=Ap f[x,y]; comp x y=Com x y
+moap f x=Ap f[x]; dyap f x y=Ap f[x,y]; comp x y=Com x y
 
-dap(AST.Dap _ a b v)=moap<$>kv v<*>kn a<*>ke b
-map(AST.Map _   a f)=dyap<$>kt f<*>ke a
---cap(AST.Cap _ (Jt a)b _)=comp<$>cap a<*>kv b; cap(AST.Cap _ _ b(Jt a))=comp<$>kt a<*>kv b
+dam (AST.Dam _ a b  )=dyap<$>(π$Fun$Op(:-))<*>kn a<*>ke b
+dap (AST.Dap _ a b v)=dyap<$>kv v<*>kn a<*>ke b
+map (AST.Map _   a f)=moap<$>kt f<*>ke a
 
-ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
+ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.Kn   _ x)=  ap=<<prj x ? parn=<<prj x ? list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
-n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ?  var=<<prj x ?       nyi"n"
-kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x ?       nyi"kt"
+n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ? flt1=<<prj x ? var=<<prj x ?       nyi"n"
+kk (AST.Kk   _ x)=  kv=<<prj x ?   ke=<<prj x ?       nyi"kpe"
+kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x
 kv (AST.Kv   _ x)=   v=<<prj x ?  avd=<<prj x
-k  (AST.K    _ x)=  kv=<<prj x ?   ke=<<prj x
+k  (AST.K _ x)=case prj @AST.Kk<$>toList x of [x]->kk=<<x; _->nyi"many.k"
 
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b)
-exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
+exp (AST.Exp   _ x)=Fun∘e2lam<$>kk x
 int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
 intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
+flt1(AST.Flt1  _ x)=π∘pflt∘T.unpack$x; pflt=A∘N∘F∘f::S->E where f x@('.':_)=read('0':x);f x=read x
 
 list(AST.List  _    x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
 ass (AST.Ass _ e Nt v)|Jt e<-e=Ass<$>kn v<*>ke e|T=Ass<$>kn v<*>π Nil; ass _=nyi"cmplx.ass"
 
 ap  (AST.Ap _ a f)|Jt a<-a=Ap<$>ke f<*>seq a|T=Ap<$>ke f<*>π[]
-parn(AST.Parn _ x)=ke=<<prj x
+parn(AST.Parn _ x)=kk=<<prj x
 seq (AST.Seq _  x)=fx<∘>seq'∘toList$x where fx=(f=<<)∘L.group∘(<>[Nil])∘(Nil:) where f(Nil:n)=n; f x=x
-seq'=trv f where f::(AST.Ke:+:AST.Semi)_->(?)E; f x=Nil<$prj @AST.Semi x ? ke=<<prj @AST.Ke x
+seq'=trv f where f::(AST.Kk:+:AST.Semi)_->(?)E; f x=Nil<$prj @AST.Semi x ? kk=<<prj @AST.Kk x
 
 args Nt=π[]; args(Jt(AST.Args _ x))=trv var'∘toList$x
 
