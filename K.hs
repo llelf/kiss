@@ -85,7 +85,7 @@ instance Arbitrary L   where arbitrary=N<$>frq[(2,O<$>arb),(1,F<$>arb)]; shrink=
 instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,Fun<$>arb),
                               (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]<*>aargs),
                               (1,Ass<$>frq[(4,avar),(1,smol arb)]<*>arb)]
-                             shrink x=sh x⊗genericShrink x where sh(Ap f x)=f:x;sh(Ls x)=x;sh _=(∅)
+                             shrink(Var _)=[Var"x"];shrink x=sh x⊗genericShrink x where sh(Ap f x)=f:x;sh(Ls x)=x;sh _=(∅)
 instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
                              shrink=π[Op(:+)]
 
