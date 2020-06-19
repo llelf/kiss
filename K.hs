@@ -69,7 +69,7 @@ instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
                       pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
-                       in prc(o==(:.))(p x)⊗pp o⊗prc(o`elem`[(:-),(:.)])(prpf y);
+                       in prc(o==(:.))(p x)⊗pp o⊗prc(o==(:.))(prpf y);
                       pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=psap a x}
 
 ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x
