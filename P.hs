@@ -24,7 +24,7 @@ kk (AST.Kk   _ x)=  kv=<<prj x ?   ke=<<prj x ?       nyi"kpe"
 kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x
 kv (AST.Kv   _ x)=   v=<<prj x ?  avd=<<prj x
 
-k  (AST.K _ ks _)=Seq<∘>trv kk∘toList$ks
+k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
