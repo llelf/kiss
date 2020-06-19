@@ -37,7 +37,7 @@ flt1(AST.Flt1  _ x)=π∘pflt∘T.unpack$x; pflt=A∘N∘F∘f::S->E where f x@(
 list(AST.List  _    x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
 ass (AST.Ass _ e Nt v)|Jt e<-e=Ass<$>kn v<*>ke e|T=Ass<$>kn v<*>π Nil; ass _=nyi"cmplx.ass"
 
-ap  (AST.Ap _ a f)|Jt a<-a=Ap<$>ke f<*>seq a|T=Ap<$>ke f<*>π[]
+ap  (AST.Ap _ a f)|Jt a<-a=Ap<$>ke f<*>seq a|T=Ap<$>ke f<*>π[Nil]
 parn(AST.Parn _ x)=kk=<<prj x
 seq (AST.Seq _  x)=fx<∘>seq'∘toList$x where fx=(f=<<)∘L.group∘(<>[Nil])∘(Nil:) where f(Nil:n)=n; f x=x
 seq'=trv f where f::(AST.Kk:+:AST.Semi)_->(?)E; f x=Nil<$prj @AST.Semi x ? kk=<<prj @AST.Kk x
