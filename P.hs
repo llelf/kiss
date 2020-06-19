@@ -5,7 +5,7 @@ import Prelude hiding(exp,map,seq); import Data.Functor.Identity;import Data.Fun
 import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import System.IO.Unsafe;import Data.Foldable
 import A;import qualified AST;import TS.K;import AST.Unmarshal;import AST.Element;    import qualified Data.List as L
 
-(∘)=(.);(<∘>)=fmap∘fmap;(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;π=pure;nyi=error∘("nyi:"<>)
+(∘)=(.);(<∘>)=fmap∘fmap;(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;seqA=sequenceA;π=pure;nyi=error∘("nyi:"<>)
 pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Either
 
 ps ::S->(?)E;      ps""=π Nil; ps s=either(π Nt)k∘ps'$s
@@ -23,7 +23,8 @@ n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ? flt1=<<prj x ? var=<<prj x ?    
 kk (AST.Kk   _ x)=  kv=<<prj x ?   ke=<<prj x ?       nyi"kpe"
 kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x
 kv (AST.Kv   _ x)=   v=<<prj x ?  avd=<<prj x
-k  (AST.K _ x)=case prj @AST.Kk<$>toList x of [x]->kk=<<x; _->nyi"many.k"
+
+k  (AST.K _ ks _)=Seq<∘>trv kk∘toList$ks
 
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
