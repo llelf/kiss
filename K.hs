@@ -1,5 +1,5 @@
-{-#language FlexibleInstances,NoMonomorphismRestriction,PartialTypeSignatures,PatternSynonyms,PostfixOperators,RankNTypes,
-          ScopedTypeVariables,StandaloneDeriving,TupleSections,TypeApplications,TypeOperators,UnicodeSyntax,ViewPatterns#-}
+{-#language FlexibleContexts,FlexibleInstances,NoMonomorphismRestriction,PartialTypeSignatures,PatternSynonyms,RankNTypes,
+           PostfixOperators,ScopedTypeVariables,TupleSections,TypeApplications,TypeOperators,UnicodeSyntax,ViewPatterns#-}
 module K where
 import A; import Data.Function;import Text.Printf(printf);import Data.Functor.Identity;import Data.Functor.Const
 import P; import Data.Int;import Data.List;import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
@@ -68,13 +68,13 @@ instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(N(F x))=sw x;pp(C c)=fm
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
-                      pp(Ap f a)|Nil`elem`a=psap f a;
-                      pp(Ap(Fun(Op o))[x,y])=let p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
-                       in prc(o==(:.))(p x)⊗pp o⊗prc(o==(:.))(prpf y);
+                      pp(Ap(Fun(Op o))[x,Nil])|x/=Nil=pdap o x;pp(Ap f a)|Nil`elem`a=psap f a;
+                      pp(Ap(Fun(Op o))[x,y])=pdap o x⊗prc(o==(:.))(prpf y);
                       pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=psap a x}
 
-ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x
-psap f x=fmt"%s[%s]"(z f)∘semi$pp<$>x where z Fun{}=pp f;z _=ppr f
+
+pdap o x=let p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x in prc(o==(:.))(p x)⊗pp o
+ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x; psap f x=fmt"%s[%s]"(z f)∘semi$pp<$>x where z Fun{}=pp f;z _=ppr f
 ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
 semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
