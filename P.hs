@@ -11,7 +11,7 @@ pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Eith
 ps ::S->(?)E;      ps""=π Nil; ps s=either(π Nt)k∘ps'$s
 ps'::S->S+AST.K(); ps' =unsafePerformIO∘parseByteString @AST.K @() tree_sitter_k∘T.encodeUtf8∘T.pack
 
-moap f x=Ap f[x]; dyap f x y=Ap f[x,y]; comp x y=Com x y; fopm=Fun$Op(:-)
+moap f x=Ap f[x]; dyap f x y=Ap f[x,y]; nyap f=Ap f[]; comp x y=Com x y; fopm=Fun$Op(:-)
 
 dam (AST.Dam _ a b  )=dyap<$>π fopm<*>kn a<*>ke b
 dap (AST.Dap _ a b v)=dyap<$>kv v<*>kn a<*>ke b
@@ -20,8 +20,8 @@ map (AST.Map _   a f)=moap<$>kt f<*>ke a
 pdam(AST.Pdam _ z a  )=dyap<$>π fopm<*>kn a<*>maybe(π Nil)kpe z
 pdap(AST.Pdap _ z a v)=dyap<$>kv v<*>kn a<*>maybe(π Nil)kpe z
 
-pmap(AST.Pmap _ Nt Nt  (Jt b))=v b
-pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z ? kv=<<prj z
+pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
+pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z -- ? kv=<<prj z
 pass(AST.Pass _(Jt e)f v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
 
 kpe(AST.Kpe _ x)=pmap=<<prj x ? pdap=<<prj x ? pass=<<prj x ? pdam=<<prj x
