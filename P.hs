@@ -21,13 +21,12 @@ pdam(AST.Pdam _ z a  )=dyap<$>π fopm<*>kn a<*>maybe(π Nil)kpe z
 pdap(AST.Pdap _ z a v)=dyap<$>kv v<*>kn a<*>maybe(π Nil)kpe z
 
 pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
-pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z -- ? kv=<<prj z
+pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
 pass(AST.Pass _(Jt e)f v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
-
-kpe(AST.Kpe _ x)=pmap=<<prj x ? pdap=<<prj x ? pass=<<prj x ? pdam=<<prj x
 
 ke (AST.Ke   _ x)=  kt=<<prj x ?  map=<<prj x ?  dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.Kn   _ x)=  ap=<<prj x ? parn=<<prj x ? list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
+kpe(AST.Kpe _  x)=pmap=<<prj x ? pdap=<<prj x ? pass=<<prj x ?pdam=<<prj x ?       nyi"pe"
 n  (AST.N    _ x)=int1=<<prj x ? intv=<<prj x ? flt1=<<prj x ? var=<<prj x ?       nyi"n"
 kk (AST.Kk   _ x)=  kv=<<prj x ?   ke=<<prj x ?  kpe=<<prj x
 kt (AST.Kt   _ x)=  kn=<<prj x ?   kv=<<prj x
@@ -38,7 +37,7 @@ k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b)
-exp (AST.Exp   _ x)=Fun∘e2lam<$>kk x
+exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
 int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
 intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
 flt1(AST.Flt1  _ x)=π∘pflt∘T.unpack$x; pflt=A∘N∘F∘f::S->E where f x@('.':_)=read('0':x);f x=read x
@@ -57,7 +56,7 @@ var'(AST.Var _ x)=π∘T.unpack$x; var=Var<∘>var'::_->(?)E; a'(AST.A _ x)=T.he
 
 
 univ a=a:a^.plE∘(∘univ);vars a=[x |Var x<-v a]where v(Fun Lam{})=[];v a=a:a^.plE∘(∘v)
-rwE::(E->(?)E)->_;rwE f=tfE$maybe??rwE f<*>f;tfE f=f∘over plE(tfE f);  plE::_=>(E->p E)->_; plE f=z where{g=trv f;
+rwE::(E->(?)E)->_;rwE f=tfE$maybe??rwE f<*>f;tfE f=f∘over plE(tfE f); plE::_=>(E->p E)->_; plE f=z where{g=trv f;
  z(Ls x)=Ls<$>g x;z(Ass v e)=Ass<$>f v<*>f e;z(Fun(Adv'd a e))=Fun∘Adv'd a<$>f e;z(Fun(Lam v e))=Fun∘Lam v<$>f e;
  z(Ap x y)=Ap<$>f x<*>g y;z(Cond x)=Cond<$>g x;z(Seq x)=Seq<$>g x;z(Com x y)=Com<$>f x<*>f y;z x=π x}
 
