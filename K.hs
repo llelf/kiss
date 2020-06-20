@@ -72,9 +72,8 @@ instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=
                       pp(Ap(Fun(Op o))[x,y])=pdap o x⊗prc(o==(:.))(prpf y);
                       pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=psap a x}
 
-
-pdap o x=let p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x in prc(o==(:.))(p x)⊗pp o
-ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x; psap f x=fmt"%s[%s]"(z f)∘semi$pp<$>x where z Fun{}=pp f;z _=ppr f
+pdap o x=prc(o==(:.))(cmon x)⊗pp o; cmon x=p x where p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
+ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x; psap f x=fmt"%s[%s]"(cmon f)∘semi$pp<$>x
 ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
 semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
