@@ -23,9 +23,9 @@ pdap(AST.Pdap _ z a v)=dyap<$> kv v <*>kn a<*>maybe(π Nil)kpe z
 pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
 pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
 
-ke (AST.Ke   _ x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
+ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.Kn   _ x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
-kpe(AST.Kpe _  x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?       nyi"pe"
+kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?       nyi"pe"
 n  (AST.N    _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?       nyi"n"
 kk (AST.Kk   _ x)=  kv=<<prj x ?  ke=<<prj x ? kpe=<<prj x
 kv (AST.Kv   _ x)=   v=<<prj x ? avd=<<prj x

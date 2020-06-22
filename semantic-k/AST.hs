@@ -1,4 +1,4 @@
-{-#language DataKinds,DeriveAnyClass,DeriveGeneric,DerivingStrategies,DuplicateRecordFields,TemplateHaskell#-}
+{-#language DataKinds,DeriveAnyClass,DeriveGeneric,DerivingStrategies,DuplicateRecordFields,GeneralizedNewtypeDeriving,TemplateHaskell#-}
 module AST where
 import AST.GenerateSyntax; import Language.Haskell.TH.Syntax(runIO); import qualified TS.K
 
