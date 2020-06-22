@@ -1,8 +1,8 @@
 {-#language FlexibleContexts,FlexibleInstances,NoMonomorphismRestriction,PartialTypeSignatures,PatternSynonyms,RankNTypes,
            PostfixOperators,ScopedTypeVariables,TupleSections,TypeApplications,TypeOperators,UnicodeSyntax,ViewPatterns#-}
 module K where
-import A; import Data.Function;import Text.Printf(printf);import Data.Functor.Identity;import Data.Functor.Const
-import P; import Data.Int;import Data.List;import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
+import A;import P;import Data.List;import Data.Int;import Text.Printf(printf);import Test.QuickCheck hiding(discard,Fun)
+import Data.Char;import Data.Function;import Data.Functor.Identity;import Data.Functor.Const;import Control.Monad.State
 
 type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type(+)=Either;data Sc=Gl|Lo deriving(Eq,Show)
 type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool;pattern NO=False
@@ -51,8 +51,6 @@ ltn2::(∀a.Num a=>a->a->a)->_;ltn2(+)=z where z(O a)(O b)=O$a+b;z(O a)(J b)=O$a
 φn::S->(N->_)->E->E->M E;φn _(×)(A(N a))(A(N b))=π∘A∘N$a×b;φn s _ _ _=er$s⊗"₂.¬num";(-^)(A(N a))=π∘A∘N$(-a);(-^)_=er"-₁.¬num"
 nup::N->N->N;nup(O a)_=O a;nup(J a)(O _)=O∘η$a;nup(J a)(J _)=J a
 
-
-
 class Ix'd a where{kvs::a->[(E,E)]}; instance Ix'd[E]where kvs=zip$A∘N∘η<$>[0..]
 --pattern Ix'd<-(isIx'd->T);isIx'd Ls{}=T;isIx'd Dic{}=T;isIx'd _=False
 
@@ -61,21 +59,22 @@ tak(A(N(O i)))|i>=0=wow∘Ls∘take(η i)∘cycl|T=such∘Ls∘rev∘take(-η i)
 frt(Ls[])=nyi"*()";frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y where ls(Ls a)=a;ls a=[a]
 siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank";gup(Ls a)=R∘Ls$A∘N∘η<$>sortOn(a!!)[0..len a-1];gup _=Er">:typ"
 
-
 class PP α where pp::α->S
-instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Adv'd a x)=(ppoa x⊗)∘π∘("/\\'"!!)∘fromEnum$a
+instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);
+                      pp(Adv'd a x)=let p(Fun(Adv'd{}))=pp x;p _=cmv x in (p x⊗)∘π∘("/\\'"!!)∘fromEnum$a
 instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(N(F x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
-                      pp(Ap(Fun(Op o))[x,Nil])|x/=Nil=pdap o x;pp(Ap f a)|Nil`elem`a=psap f a;
-                      pp(Ap(Fun(Op o))[x,y])=pdap o x⊗prc(o==(:.))(prpf y);
-                      pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x;pp(Ap f[])=pp f;pp(Ap a x)=psap a x}
+                      pp(Ap o@AO[x,Nil])|x/=Nil=cmn x⊕pp o;pp(Ap f a)|Nil∈a=psap f a;pp(Ap o@AO[x,y])=cmn x⊕pp o⊕prpf y;
+                      pp(Ap o@AO[x])=pp o⊕prpf x;pp(Ap f[])=pp f;pp(Ap a x)=psap a x}
 
-pdap o x=prc(o==(:.))(cmon x)⊗pp o; cmon x=p x where p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
-ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x; psap f x=fmt"%s[%s]"(cmon f)∘semi$pp<$>x
-ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:.)]]; prc c|c=pr|T=id
-semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
+(∈)=elem;hd[]='\0';hd(x:_)=x;lt=hd∘rev;pattern AO<-(let ao(Fun(Op _))=T;ao(Fun(Adv'd _(ao->T)))=T;ao _=NO in ao->T)
+prpf x@Fun{}=pr∘pp$x; prpf x=pp x;x⊕y=x⊗s⊗y where s|isDigit(lt x)&&'.'==hd y=" "|lt x∈".-"&&isDigit(hd y)=" "|T=(∅)
+cmv x@Fun{}=pp x;cmv x=cmn x; cmn x=p x where p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
+ict=intercalate;semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c∈"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
+psap f x=fmt"%s[%s]"(cmv f)∘semi$pp<$>x
+
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
 ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elements["x","y","foo"];gs=genericShrink
 aargs=frq[(3,π<$>smol a),(3,(∘π)∘(:)<$>smol a<*>smol a),(1,choose(0,5)>>=vectorOf??tiny a)]where a=frq[(7,arb),(1,π Nil)]
