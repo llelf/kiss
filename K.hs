@@ -5,7 +5,7 @@ import A; import Data.Function;import Text.Printf(printf);import Data.Functor.Id
 import P; import Data.Int;import Data.List;import Control.Monad.State;import Test.QuickCheck hiding(discard,Fun)
 
 type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type(+)=Either;data Sc=Gl|Lo deriving(Eq,Show)
-type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool; pattern NO=False
+type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool;pattern NO=False
 
 (∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;sw=show;trv=traverse;seqA=sequenceA
 rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."⊗);wow=φ∘R;such=wow; meh=error"xkcd.com/292"
@@ -70,7 +70,7 @@ instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
                       pp(Ap(Fun(Op o))[x,Nil])|x/=Nil=pdap o x;pp(Ap f a)|Nil`elem`a=psap f a;
                       pp(Ap(Fun(Op o))[x,y])=pdap o x⊗prc(o==(:.))(prpf y);
-                      pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x; pp(Ap a x)=psap a x}
+                      pp(Ap(Fun(Op o))[x])=pp o⊗spmd o⊗prpf x;pp(Ap f[])=pp f;pp(Ap a x)=psap a x}
 
 pdap o x=prc(o==(:.))(cmon x)⊗pp o; cmon x=p x where p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
 ppoa(Fun(Op o))=pp o;ppoa(A a)=pp a;ppoa x=ppr x; psap f x=fmt"%s[%s]"(cmon f)∘semi$pp<$>x
@@ -78,7 +78,7 @@ ict=intercalate;prpf x@Fun{}=pr∘pp$x; prpf x=pp x; spmd o=[' '|o`elem`[(:-),(:
 semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c`elem`"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
 ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elements["x","y","foo"];gs=genericShrink
-aargs=frq[(3,π<$>smol a),(3,(∘π)∘(:)<$>smol a<*>smol a),(1,choose(3,5)>>=vectorOf??tiny a)]where a=frq[(7,arb),(1,π Nil)]
+aargs=frq[(3,π<$>smol a),(3,(∘π)∘(:)<$>smol a<*>smol a),(1,choose(0,5)>>=vectorOf??tiny a)]where a=frq[(7,arb),(1,π Nil)]
 
 instance Arbitrary L   where arbitrary=N<$>frq[(2,O<$>arb),(1,F<$>arb)]; shrink=π[N 0]
 instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,Fun<$>arb),
