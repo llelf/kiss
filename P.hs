@@ -40,9 +40,9 @@ int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
 intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
 flt1(AST.Flt1  _ x)=π∘pflt∘T.unpack$x; pflt=A∘N∘F∘f::S->E where f x@('.':_)=read('0':x);f x=read x
 
-list(AST.List  _    x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
-ass (AST.Ass _ e Nt v)|Jt e<-e=Ass<$>kn v<*>ke e|T=Ass<$>kn v<*>π Nil; ass _=nyi"cmplx.ass"
-pass(AST.Pass _(Jt e)f v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
+list(AST.List  _     x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
+ass (AST.Ass  _ e Nt v)|Jt e<-e=Ass<$>kn v<*>ke e|T=Ass<$>kn v<*>π Nil; ass _=nyi"cmplx.ass"
+pass(AST.Pass _ e Nt v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
 
 ap  (AST.Ap _ a f)|Jt a<-a=Ap<$>ke f<*>seq a|T=Ap<$>ke f<*>π[Nil]
 parn(AST.Parn _ x)=kk=<<prj x
