@@ -25,8 +25,8 @@ pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
 
 ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ? lit=<<prj x ? lam=<<prj x ? nyi"kn"
-kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?       nyi"pe"
-lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?       nyi"n"
+lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?sym1=<<prj x ? nyi"n"
+kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?    nyi"pe"
 kk (AST.Kk   _ x)=  kv=<<prj x ?  ke=<<prj x ? kpe=<<prj x
 kv (AST.V      x)=   v=<<prj x ? avd=<<prj x
 
@@ -37,6 +37,7 @@ avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b);   exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
 int1(AST.Int1  _ x)=π∘pint∘σ$x;                             intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘σ$x
 flt1(AST.Flt1  _ x)=π∘pflt∘σ$x;
+sym1(AST.Sym1  _ x)=π∘A∘Sy∘tail∘σ$x
 
 pint=A∘N∘O∘read::S->E; pflt=A∘N∘F∘f::S->E where f x|('.':_)<-reverse x=read(x<>"0");f('-':x)=read("-0"<>x);f x=read('0':x)
 
