@@ -24,15 +24,15 @@ pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
 pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
 
 ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
-kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
+kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ? lit=<<prj x ? lam=<<prj x ? nyi"kn"
 kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?       nyi"pe"
-n  (AST.N    _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?       nyi"n"
+lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?       nyi"n"
 kk (AST.Kk   _ x)=  kv=<<prj x ?  ke=<<prj x ? kpe=<<prj x
 kv (AST.V      x)=   v=<<prj x ? avd=<<prj x
 
 k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 
-v   (AST.V     _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
+v   (AST.Op    _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b)
 exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
