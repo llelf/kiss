@@ -24,11 +24,11 @@ pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
 pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
 
 ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
-kn (AST.Kn   _ x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
+kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?   n=<<prj x ? lam=<<prj x ? nyi"kn"
 kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?       nyi"pe"
 n  (AST.N    _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?       nyi"n"
 kk (AST.Kk   _ x)=  kv=<<prj x ?  ke=<<prj x ? kpe=<<prj x
-kv (AST.Kv   _ x)=   v=<<prj x ? avd=<<prj x
+kv (AST.V      x)=   v=<<prj x ? avd=<<prj x
 
 k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 
