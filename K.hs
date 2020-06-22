@@ -65,15 +65,17 @@ instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);
 instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(N(F x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
-                      pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)|Var v<-x=v⊗":"⊗pp e|T=ppr x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
+                      pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)=cmn x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
                       pp(Ap o@AO[x,Nil])|x/=Nil=cmn x⊕pp o;pp(Ap f a)|Nil∈a=psap f a;pp(Ap o@AO[x,y])=cmn x⊕pp o⊕prpf y;
                       pp(Ap o@AO[x])=pp o⊕prpf x;pp(Ap f[])=pp f;pp(Ap a x)=psap a x}
 
+wp A{}=T;wp Fun{}=NO;wp Var{}=T;wp(Ap AO _)=NO;wp(Ap _((Nil∈)->T))=NO;wp(Ap _[])=NO;wp Ap{}=T;wp _=NO
+
 (∈)=elem;hd[]='\0';hd(x:_)=x;lt=hd∘rev;pattern AO<-(let ao(Fun(Op _))=T;ao(Fun(Adv'd _(ao->T)))=T;ao _=NO in ao->T)
-prpf x@Fun{}=pr∘pp$x; prpf x=pp x;x⊕y=x⊗s⊗y where s|isDigit(lt x)&&'.'==hd y=" "|lt x∈".-"&&isDigit(hd y)=" "|T=(∅)
-cmv x@Fun{}=pp x;cmv x=cmn x; cmn x=p x where p A{}=pp x;p Var{}=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
-ict=intercalate;semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c∈"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
+prpf x@Fun{}=pr∘pp$x; prpf x=pp x;x⊕y=x⊗s⊗y where s|isDigit(lt x),'.'<-hd y=" "|lt x∈".-",isDigit(hd y)=" "|T=(∅)
+cmv x@Fun{}=pp x;cmv x=cmn x;     cmn x=p x where p(wp->T)=pp x;p(Ls[x])=pr(',':prpf x);p Ls{}=pp x;p x=ppr x
 psap f x=fmt"%s[%s]"(cmv f)∘semi$pp<$>x
+ict=intercalate;semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c∈"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
 ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elements["x","y","foo"];gs=genericShrink
