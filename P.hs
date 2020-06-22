@@ -13,11 +13,11 @@ ps'::S->S+AST.K(); ps' =unsafePerformIO∘parseByteString @AST.K @() tree_sitter
 
 moap f x=Ap f[x]; dyap f x y=Ap f[x,y]; nyap f=Ap f[]; comp x y=Com x y; fopm=Fun$Op(:-); kt x=kn=<<prj x ? kv=<<prj x
 
-dam (AST.Dam _ a b  )=dyap<$>π fopm<*>kn a<*>ke b
+dam (AST.Dam _ a b _)=dyap<$>π fopm<*>kn a<*>ke b
 dap (AST.Dap _ a b v)=dyap<$> kv v <*>kn a<*>ke b
 map (AST.Map _   a f)=moap<$> kt f <*>ke a
 
-pdam(AST.Pdam _ z a  )=dyap<$>π fopm<*>kn a<*>maybe(π Nil)kpe z
+pdam(AST.Pdam _ z a _)=dyap<$>π fopm<*>kn a<*>maybe(π Nil)kpe z
 pdap(AST.Pdap _ z a v)=dyap<$> kv v <*>kn a<*>maybe(π Nil)kpe z
 
 pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
