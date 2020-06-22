@@ -6,7 +6,7 @@ import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import 
 import A;import qualified AST;import TS.K;import AST.Unmarshal;import AST.Element;    import qualified Data.List as L
 
 (∘)=(.);(<∘>)=fmap∘fmap;(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;seqA=sequenceA;π=pure;nyi=error∘("nyi:"<>)
-pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Either
+pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Either;σ=T.unpack
 
 ps ::S->(?)E;      ps""=π Nil; ps s=either(π Nt)k∘ps'$s
 ps'::S->S+AST.K(); ps' =unsafePerformIO∘parseByteString @AST.K @() tree_sitter_k∘T.encodeUtf8∘T.pack
@@ -34,11 +34,11 @@ k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 
 v   (AST.Op    _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
-lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b)
-exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
-int1(AST.Int1  _ x)=π∘pint∘T.unpack$x; pint=A∘N∘O∘read::S->E
-intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘T.unpack$x
-flt1(AST.Flt1  _ x)=π∘pflt∘T.unpack$x; pflt=A∘N∘F∘f::S->E where f x@('.':_)=read('0':x);f x=read x
+lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b);   exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
+int1(AST.Int1  _ x)=π∘pint∘σ$x;                             intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘σ$x
+flt1(AST.Flt1  _ x)=π∘pflt∘σ$x;
+
+pint=A∘N∘O∘read::S->E; pflt=A∘N∘F∘f::S->E where f x|('.':_)<-reverse x=read(x<>"0");f('-':x)=read("-0"<>x);f x=read('0':x)
 
 list(AST.List  _     x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
 ass (AST.Ass  _ e Nt v)|Jt e<-e=Ass<$>kn v<*>ke e|T=Ass<$>kn v<*>π Nil; ass _=nyi"cmplx.ass"
@@ -51,7 +51,7 @@ seq'=trv f where f::(AST.Kk:+:AST.Semi)_->(?)E; f x=Nil<$prj @AST.Semi x ? kk=<<
 
 args Nt=π[]; args(Jt(AST.Args _ x))=trv var'∘toList$x
 
-var'(AST.Var _ x)=π∘T.unpack$x; var=Var<∘>var'::_->(?)E; a'(AST.A _ x)=T.head x::C
+var'(AST.Var _ x)=π∘σ$x; var=Var<∘>var'::_->(?)E; a'(AST.A _ x)=T.head x::C
 
 
 univ a=a:a^.plE∘(∘univ);vars a=[x |Var x<-v a]where v(Fun Lam{})=[];v a=a:a^.plE∘(∘v)
