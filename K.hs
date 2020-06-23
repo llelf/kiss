@@ -66,6 +66,8 @@ instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(N(F x))=sw x;pp(C c)=fm
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)=cmn x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
+                      pp(Dic[][])="{}";--pp(Dic k v)=fmt"{%s}"∘semi∘zipWith((∘pp)∘(⊗)∘(⊗":")∘pp)k$v;
+                      pp(Dic k v)=pp$Ap(fop(:!))[Ls k,Ls v];
                       pp(Ap o@AO[x,Nil])|x/=Nil=cmn x⊕pp o;pp(Ap f a)|Nil∈a=psap f a;pp(Ap o@AO[x,y])=cmn x⊕pp o⊕prpf y;
                       pp(Ap o@AO[x])=pp o⊕prpf x;pp(Ap f[])=pp f;pp(Ap a x)=psap a x}
 
@@ -77,12 +79,13 @@ cmv x@Fun{}=pp x;cmv x=cmn x;     cmn x=p x where p(wp->T)=pp x;p(Ls[x])=pr(',':
 psap f x=fmt"%s[%s]"(cmv f)∘semi$pp<$>x
 ict=intercalate;semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c∈"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 
-arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elements[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
-ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elements["x","y","foo"];gs=genericShrink
+arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elm[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
+elm=elements;ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elm["x","y","foo"];asy=A∘Sy<∘>elm$π<$>"abc";gs=genericShrink
 aargs=frq[(3,π<$>smol a),(3,(∘π)∘(:)<$>smol a<*>smol a),(1,choose(0,5)>>=vectorOf??tiny a)]where a=frq[(7,arb),(1,π Nil)]
+adic=uncurry Dic∘unzip<∘>smol∘listOf$(,)<$>asy<*>(A<$>arb)
 
 instance Arbitrary L   where arbitrary=N<$>frq[(2,O<$>arb),(1,F<$>arb)]; shrink=π[N 0]
-instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,Fun<$>arb),
+instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,adic),(1,Fun<$>arb),
                               (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]<*>aargs),
                               (1,Ass<$>frq[(4,avar),(1,smol arb)]<*>arb)]
                              shrink(Var _)=[Var"x"];shrink(Ap f x)=f:x⊗[p|p@(Ap _ a)<-Ap<$>gs f<*>gs x,a/=[]];
