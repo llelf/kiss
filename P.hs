@@ -24,7 +24,7 @@ pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
 pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
 
 ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
-kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ? lit=<<prj x ? lam=<<prj x ? nyi"kn"
+kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?dict=<<prj x ? lit=<<prj x ? lam=<<prj x ?   nyi"ne"
 lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?sym1=<<prj x ? nyi"n"
 kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?    nyi"pe"
 kk (AST.Kk   _ x)=  kv=<<prj x ?  ke=<<prj x ? kpe=<<prj x
@@ -41,7 +41,8 @@ sym1(AST.Sym1  _ x)=π∘A∘Sy∘tail∘σ$x
 
 pint=A∘N∘O∘read::S->E; pflt=A∘N∘F∘f::S->E where f x|('.':_)<-reverse x=read(x<>"0");f('-':x)=read("-0"<>x);f x=read('0':x)
 
-list(AST.List  _     x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
+dict(AST.Dict   _  x _)=kv2d<∘>trv kv$x where kv(AST.Kv _ k v)=(,)<$>(A∘Sy<∘>var'$k)<*>maybe(π Nil)kk v
+list(AST.List      _ x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
 ass (AST.Ass  _ e Nt v)|Jt e<-e=Ass<$>kn v<*>ke e|T=Ass<$>kn v<*>π Nil; ass _=nyi"cmplx.ass"
 pass(AST.Pass _ e Nt v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
 
@@ -52,7 +53,7 @@ seq'=trv f where f::(AST.Kk:+:AST.Semi)_->(?)E; f x=Nil<$prj @AST.Semi x ? kk=<<
 
 args Nt=π[]; args(Jt(AST.Args _ x))=trv var'∘toList$x
 
-var'(AST.Var _ x)=π∘σ$x; var=Var<∘>var'::_->(?)E; a'(AST.A _ x)=T.head x::C
+var'(AST.Var _ x)=π∘σ$x; var=Var<∘>var'::_->(?)E; a'(AST.A _ x)=T.head x::C;  kv2d::[(E,E)]->E; kv2d=uncurry Dic∘unzip
 
 
 univ a=a:a^.plE∘(∘univ);vars a=[x |Var x<-v a]where v(Fun Lam{})=[];v a=a:a^.plE∘(∘v)
