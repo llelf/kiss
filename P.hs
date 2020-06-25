@@ -27,11 +27,12 @@ ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<
 kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?dict=<<prj x ? lit=<<prj x ? lam=<<prj x ?   nyi"ne"
 lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?sym1=<<prj x ? nyi"n"
 kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?    nyi"pe"
-kk (AST.Kk   _ x)=  kv=<<prj x ?  ke=<<prj x ? kpe=<<prj x
-kv (AST.V      x)=   v=<<prj x ? avd=<<prj x
+kv (AST.V      x)=   v=<<prj x ? avd=<<prj x ?  io=<<prj x
+kk (AST.Kk   _ x)=  ke=<<prj x ? kpe=<<prj x
 
 k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 
+io  (AST.Io    _ x)=nyi"io"
 v   (AST.Op    _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b);   exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
