@@ -1,9 +1,9 @@
 {-# language FunctionalDependencies,NoMonomorphismRestriction,PartialTypeSignatures,PatternSynonyms,TypeApplications,
              TypeOperators,TypeFamilies,ViewPatterns #-}
 module P (ps,ps',plE,rwE,univ,vars) where
-import Prelude hiding(exp,map,seq); import Data.Functor.Identity;import Data.Functor.Const;import Control.Applicative
-import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import System.IO.Unsafe;import Data.Foldable
-import A;import qualified AST;import TS.K;import AST.Unmarshal;import AST.Element;    import qualified Data.List as L
+import Prelude hiding(exp,map,seq);import Data.Functor.Identity;import Data.Functor.Const;import qualified Data.List as L
+import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import Data.Foldable; import Control.Applicative
+import A; import qualified AST; import TreeSitter.K; import AST.Unmarshal; import AST.Element;    import System.IO.Unsafe
 
 (∘)=(.);(<∘>)=fmap∘fmap;(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;seqA=sequenceA;π=pure;nyi=error∘("nyi:"<>)
 pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Either;σ=T.unpack

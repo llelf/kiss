@@ -4,4 +4,4 @@ version:0.1
 
 library
  exposed-modules:AST
- build-depends:base,template-haskell,ts-k,tree-sitter,semantic,semantic-ast,semantic-source
+ build-depends:base,template-haskell,tree-sitter-k,tree-sitter,semantic-core,semantic-ast,semantic-source
