@@ -1,0 +1,785 @@
+===
+i
+===
+42
+---
+(k (lit (int1)))
+
+===
++
+===
++
+---
+(k (op))
+
+===
+i+i
+===
+2+3
+---
+(k (dap (lit (int1)) (op) (lit (int1))))
+
+===
+i-i
+===
+4-2
+---
+(k (dam (lit (int1)) (op) (lit (int1))))
+
+===
+i - i
+===
+4 - 2
+---
+(k (dap (lit (int1)) (op) (lit (int1))))
+
+===
++i
+===
++4
+---
+(k (map (op) (lit (int1))))
+
+===
+-N
+===
+-2
+---
+(k (lit (int1)))
+
+===
+- N
+===
+- 4
+---
+(k (map (op) (lit (int1))))
+
+===
+++i
+===
+++123
+---
+(k (map (op) (map (op) (lit (int1)))))
+
+===
+i+
+===
+0+
+---
+(k k: (pdap a: (lit (int1)) v: (op)))
+
+===
+v v+
+===
+x y+
+---
+(k k: (pmap f: (lit (var)) z: (pdap a: (lit (var)) v: (op))))
+
+===
+i++
+===
+0++
+---
+(k k: (pdap a: (lit (int1)) v: (op) z: (pmap v: (op))))
+
+===
+vvv
+===
++*!
+---
+(k k: (pmap f: (op) z: (pmap f: (op) z: (pmap v: (op)))))
+
+===
+vvvn
+===
++*!0
+---
+(k k: (map f: (op) a: (map f: (op) a: (map f: (op) a: (lit (int1))))))
+
+===
+vvva
+===
++*![0]
+---
+(k k: (map f: (op) a: (map f: (op) a: (ap f: (op) a: (seq (lit (int1)))))))
+
+===
+nvv
+===
+(+)*!
+---
+(k k: (pdap a: (parn (op)) v: (op) z: (pmap v: (op))))
+
+===
+nvvn
+===
+(+)*!0
+---
+(k k: (dap a: (parn (op)) v: (op) b: (map f: (op) a: (lit (int1)))))
+
+===
+nvva
+===
+(+)*![0]
+---
+(k k: (dap a: (parn (op)) v: (op) b: (ap f: (op) a: (seq (lit (int1))))))
+
+===
+n(v×8)
+===
+42########
+---
+(k k: (pdap a: (lit (int1)) v: (op)
+    z: (pmap f: (op) z: (pmap f: (op) z: (pmap f: (op) z: (pmap f: (op)
+     z: (pmap f: (op) z: (pmap f: (op) z: (pmap v: (op))))))))))
+
+===
+(v×8)
+===
+####++++
+---
+(k k: (pmap f: (op)
+    z: (pmap f: (op) z: (pmap f: (op) z: (pmap f: (op) z: (pmap f: (op)
+     z: (pmap f: (op) z: (pmap f: (op) z: (pmap v: (op))))))))))
+
+===
+i++i
+===
+0++0
+---
+(k (dap (lit (int1)) (op) (map (op) (lit (int1)))))
+
+===
+i+-N
+===
+2+-1
+---
+(k (dap (lit (int1)) (op) (lit (int1))))
+
+===
+v[i]+v[I]
+===
+x[0]!x[1 2]
+---
+(k (dap (ap (lit (var)) (seq (lit (int1))))
+        (op)
+        (ap (lit (var)) (seq (lit (intv))))))
+
+===
+*[i]
+===
+*[0]
+---
+(k (ap (op) (seq (lit (int1)))))
+
+===
+#*[i]
+===
+#*[0]
+---
+(k (map (op) (ap (op) (seq (lit (int1))))))
+
+===
+i+![i]
+===
+1+!2
+---
+(k (dap (lit (int1)) (op) (map (op) (lit (int1)))))
+
+===
+*[i;i]
+===
+*[0;1]
+---
+(k (ap (op) (seq (lit (int1)) (lit (int1)))))
+
+===
+*[i;+]
+===
+*[0;+]
+---
+(k (ap (op) (seq (lit (int1)) (op))))
+
+===
+*[i;i;i]
+===
+*[0;1;2]
+---
+(k (ap (op) (seq (lit (int1)) (lit (int1)) (lit (int1)))))
+
+===
+v[dap;map]
+===
+foo[2+3;!10]
+---
+(k (ap (lit (var))
+       (seq (dap (lit (int1)) (op) (lit (int1)))
+            (map (op) (lit (int1))))))
+
+===
++[;]
+===
++[;]
+---
+(k (ap (op) (seq)))
+
+===
+v[;i][i;][i]
+===
+foo[;1][0;][2]
+---
+(k (ap (ap (ap (lit (var))
+               (seq (lit (int1))))
+           (seq (lit (int1))))
+   (seq (lit (int1)))))
+
+===
++/
+===
++/
+---
+(k (avd (op) (a)))
+
+===
++/*\
+===
++/*\
+---
+(k (pmap (avd (op) (a)) (pmap (avd (op) (a)))))
+
+===
++/(i;i)
+===
++/(2;3)
+---
+(k (map (avd (op) (a))
+   (list (seq (lit (int1)) (lit (int1)))))) 
+
+===
++//v
+===
++//foo
+---
+(k (map (avd (avd (op) (a)) (a))
+        (lit (var))))
+
+===
++/I
+===
++/4 2
+---
+(k (map (avd (op) (a))
+        (lit (intv))))
+
+===
+i+/I
+===
+0+/2 4
+---
+(k (dap (lit (int1))
+        (avd (op) (a))
+        (lit (intv))))
+
+===
+i/i
+===
+2/2
+---
+(k (map (avd (lit (int1)) (a)) (lit (int1)))) 
+
+===
+i/
+===
+42/
+---
+(k (avd (lit (int1)) (a)))
+
+===
+()
+===
+()
+---
+(k (list))
+
+===
+(i)
+===
+(1)
+---
+(k (parn (lit (int1))))
+
+===
+(i;i)
+===
+(1;2)
+---
+(k (list (seq (lit (int1)) (lit (int1)))))
+
+===
+v
+===
+foo
+---
+(k (lit (var)))
+
+===
+(((op)))
+===
+(((foo)))
+---
+(k (parn (parn (parn (lit (var))))))
+
+===
+i+i+i
+===
+1+2+3
+---
+(k (dap (lit (int1))
+        (op)
+        (dap (lit (int1)) (op) (lit (int1)))))
+
+===
+i+(i+i)
+===
+1+(2+3)
+---
+(k (dap (lit (int1))
+        (op)
+        (parn (dap (lit (int1)) (op) (lit (int1))))))
+
+===
+(i+i)+i
+===
+(1+2)+3
+---
+(k (dap (parn (dap (lit (int1)) (op) (lit (int1))))
+   (op)
+   (lit (int1))))
+
+===
+f.*.f
+===
+1.*.2
+---
+(k (dap (lit (flt1)) (op) (lit (flt1))))
+
+===
+I
+===
+1 2 3
+---
+(k (lit (intv)))
+
+===
+I₋₊₊
+===
+-1 2 3
+---
+(k (lit (intv)))
+
+===
+I₊₋₊
+===
+1 -2 3
+---
+(k (lit (intv)))
+
+===
+I₋₋₋
+===
+-1 -2 -3
+---
+(k (lit (intv)))
+
+===
+I₇
+===
+0 1 2 3 4 5 6
+---
+(k (lit (intv)))
+
+===
+I₈
+===
+0 1 2 3 4 5 6 7
+---
+(k (lit (intv)))
+
+===
+f
+===
+3.141592653589793238462643383279502884197169
+---
+(k (lit (flt1)))
+
+===
+F.
+===
+1 2 3.
+---
+(k (lit (fltv)))
+
+===
+.F
+===
+.1 2 3
+---
+(k (lit (fltv)))
+
+===
+Fe
+===
+1 2e2 3
+---
+(k (lit (fltv)))
+
+===
+F.-.F
+===
+1.-.2
+---
+(k k: (dam a: (lit (flt1)) v: (op) b: (lit (flt1))))
+
+===
+,I₄
+===
+,0 1 2 3
+---
+(k (map (op) (lit (intv))))
+
+===
+,,I₄
+===
+,,0 1 2 3
+---
+(k (map (op) (map (op) (lit (intv)))))
+
+===
+,,,I₄
+===
+,,,0 1 2 3
+---
+(k (map (op) (map (op) (map (op) (lit (intv))))))
+
+===
+I₁
+===
+,-0
+---
+(k (map (op) (lit (int1))))
+
+===
+(I;I)
+===
+(1 0;0 1)
+---
+(k (list (seq (lit (intv))
+              (lit (intv)))))
+
+===
+(I₁;I)
+===
+(,0;0 1)
+---
+(k (list (seq (map (op) (lit (int1)))
+              (lit (intv)))))
+
+===
+vI
+===
+foo 0 1
+---
+(k (map (lit (var))
+        (lit (intv))))
+
+===
+Iv
+===
+0 1 x
+---
+(k (map (lit (intv))
+        (lit (var))))
+
+===
+id
+===
+{[x]x}
+---
+(k (lam (args (var)) (seq (lit (var)))))
+
+===
+const
+===
+{[x;y]y}
+---
+(k (lam (args (var) (var)) (seq (lit (var)))))
+
+===
+fnil0
+===
+{[]}
+---
+(k (lam))
+
+===
+fseq
+===
+{[a]a;a}
+---
+(k (lam (args (var)) (seq (lit (var)) (lit (var)))))
+
+===
+i+I
+===
+1+0 1 2
+---
+(k (dap (lit (int1))
+        (op)
+        (lit (intv))))
+
+===
+I+i
+===
+0 1 2+1
+---
+(k (dap (lit (intv))
+        (op)
+        (lit (int1))))
+
+===
+I+v
+===
+0 1 2+x
+---
+(k (dap (lit (intv))
+        (op)
+        (lit (var))))
+
+===
+I+I
+===
+0 1 2+3 4
+---
+(k (dap (lit (intv))
+        (op)
+        (lit (intv))))
+
+===
+v:i
+===
+answer:42
+---
+(k (ass (lit (var)) (lit (int1))))
+
+===
+e
+===
+:x*x
+---
+(k (exp (dap (lit (var)) (op) (lit (var)))))
+
+===
+v:e
+===
+add::x+y
+---
+(k (ass (lit (var))
+     (exp (dap (lit (var)) (op) (lit (var))))))
+
+===
+v:v:v
+===
+x:y:z
+---
+(k (ass (lit (var)) (ass (lit (var)) (lit (var)))))
+
+===
+v+:+i
+===
+c+:+1
+---
+(k (ass (lit (var)) (op) (map (op) (lit (int1)))))
+
+===
+v:
+===
+foo:
+---
+(k (ass (lit (var))))
+
+===
+v:+[..]
+===
+x:+[2;2]
+---
+(k k: (ass v: (lit (var))
+           a: (ap f: (op) a: (seq (lit (int1)) (lit (int1))))))
+
+===
+v:+
+===
+plus:+
+---
+(k k: (pass v: (lit (var)) a: (pmap v: (op))))
+
+===
+v:nv
+===
+suc:1+
+---
+(k k: (pass v: (lit (var))
+            a: (pdap a: (lit (int1)) v: (op))))
+
+===
++[a:1;b:2]
+===
++[a:1;b:2]
+---
+(k (ap (op) (seq (ass (lit (var)) (lit (int1)))
+                (ass (lit (var)) (lit (int1)))))) 
+
+===
+f g h
+===
+f g h
+---
+(k (map (lit (var))
+        (map (lit (var)) (lit (var)))))
+
+===
+f g*h k
+===
+f g*h k
+---
+(k (map (lit (var))
+        (dap (lit (var)) (op)
+             (map (lit (var)) (lit (var))))))
+
+===
+e/I
+===
+(:x+y)/2 2
+---
+(k k: (map f: (avd f: (parn (exp (dap a: (lit (var)) v: (op) b: (lit (var)))))
+                   a: (a))
+           a: (lit (intv))))
+
+===
+sorted
+===
+&/~<':
+---
+(k k: (pmap f: (avd f: (op) a: (a))
+          z: (pmap f: (op) z: (pmap v: (avd f: (op) a: (a))))))
+
+===
+amend
+===
+@[x;0;:;1]
+---
+(k (ap (op) (seq (lit (var))
+              (lit (int1))
+              (op)
+              (lit (int1)))))
+
+===
+io0
+===
+header:*0:"01.txt"
+---
+(k k: (ass v: (lit (var)) a: (map f: (op) a: (map f: (io) a: (lit (chrv))))))
+
+===
+io1
+===
+` 0:msg:"hi!"
+---
+(k k: (dap a: (lit (sym1)) v: (io) b: (ass v: (lit (var)) a: (lit (chrv)))))
+
+===
+dct0
+===
+{}
+---
+(k (dict))
+
+===
+dct1
+===
+{x:1}
+---
+(k (dict (kv (var) (lit (int1)))))
+
+===
+dct2
+===
+{sum:+/; add::x+y}
+---
+(k (dict (kv (var) (avd (op) (a)))
+         (kv (var) (exp (dap (lit (var)) (op) (lit (var)))))))
+
+===
+tbl1
+===
+[[]s:`AAPL`MSFT`GOOG]
+---
+(k (tabl (kv (var) (lit (symv))))) 
+
+===
+c1
+===
+("a";" ";"\n")
+---
+(k (list (seq (lit (chr1)) (lit (chr1)) (lit (chr1)))))
+
+===
+c2
+===
+("\";""")
+---
+(k (parn (map (lit (chrv)) (lit (chrv)))))
+
+===
+lelf/pe/p24
+===
+p24:(:<<y,x)/|sv[1+!n:10]i:1000000-1
+---
+(k (ass (lit (var))
+    (map (avd (parn (exp (map (op)
+                              (map (op)
+                                   (dap (lit (var)) (op) (lit (var)))))))
+              (a))
+         (map (op)
+           (map (ap (lit (var))
+                    (seq (dap (lit (int1))
+                              (op)
+                              (map (op) (ass (lit (var)) (lit (int1)))))))
+                (ass (lit (var))
+                     (dam (lit (int1)) (op) (lit (int1)))))))))
+
+===
+i#[]
+===
+0#[]
+---
+(k k: (map f: (lit (int1)) a: (ap f: (op))))
+
+===
+wild0
+===
++[+]+[+]:+
+---
+(k k: (pmap f: (ap f: (op) a: (seq (op)))
+            z: (pass v: (ap f: (op) a: (seq (op)))
+                     a: (pmap v: (op)))))
+
+===
+wild1
+===
+2-[2-]2-[2-]:2-
+---
+(k k: (pmap f: (lit (int1))
+            z: (pmap f: (ap f: (op) a: (seq (pdap a: (lit (int1)) v: (op))))
+                     z: (pmap f: (lit (int1))
+                              z: (pass v: (ap f: (op) a: (seq (pdap a: (lit (int1)) v: (op))))
+                                       a: (pdap a: (lit (int1)) v: (op)))))))

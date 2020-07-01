@@ -1,0 +1,74 @@
+===
+ls
+===
+(1 2
+ 3)
+---
+(k (list (seq (lit (intv)) (lit (int1)))))
+
+===
+ls*
+===
+(1 2
+3)
+---
+(k k: (list (seq (map f: (lit (intv)) (ERROR) a: (lit (int1))))))
+
+===
+nb1
+===
+foo:+/ /hi
+---
+(k k: (pass v: (lit (var)) a: (pmap v: (avd f: (op) a: (a)))) (nb))
+
+===
+nb2
+===
+(1  /one
+ 2) /two
+---
+(k (list (seq (lit (int1)) (nb) (lit (int1)))) (nb))
+
+===
+nb3
+===
++  /oh
+:+ /ok
+---
+(k (op) (nb) (pexp (pmap (op))) (nb))
+
+===
+nb4
+===
+ /one
+ /two
+
+3 /threeeeee
+
+---
+(k (nb) (nb) (lit (int1)) (nb))
+
+===
+di2.1
+===
+{a:a
+ b:{c:
+    d:42}}
+---
+(k k:
+ (dict   kv: (kv k: (var) v: (lit (var)))
+         kv: (kv k: (var) v: (dict
+               kv:  (kv k: (var))
+               kv:  (kv k: (var) v: (lit (int1)))))))
+
+===
+fun1
+===
+{[x;y]x:y
+      x*y}
+---
+(k k:
+    (lam v: (args (var) (var))
+         b: (seq (ass v: (lit (var)) a: (lit (var)))
+                 (dap a: (lit (var)) v: (op) b: (lit (var))))))
+
