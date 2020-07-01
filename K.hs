@@ -7,7 +7,7 @@ import Data.Char;import Data.Function;import Data.Functor.Identity;import Data.F
 type ΓΓ=[(V,E)];type Γ=[(V,(Sc,E))];type Env=Γ;type Σ=Γ;type(+)=Either;data Sc=Gl|Lo deriving(Eq,Show)
 type M=StateT Σ((+)S); pattern R x=Right x; pattern Er x=Left x; pattern T=True::Bool;pattern NO=False
 
-(∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;sw=show;trv=traverse;seqA=sequenceA
+(∘)=(.);(⊗)=(<>);π=pure;φ=lift;(??)=flip;(<∘>)=fmap∘fmap;infixl 4<∘>;len=length;σ=show;trv=traverse;seqA=sequenceA
 rev=reverse;fmt=printf;(∅)=mempty;η=fromIntegral;er=φ∘Er;nyi=er∘("nyi."⊗);wow=φ∘R;such=wow; meh=error"xkcd.com/292"
 
 [k0,k1,k2]=A∘N∘O<$>[0..2];kemp=Ls[];k00=Ls[k0,k0];k01=Ls[k0,k1];k_2=Ls[Ls[k1,k0],k01];[ksp,kca]=A∘C<$>" A";
@@ -38,7 +38,7 @@ eop(:+) [x,y]=a2(φn"+"(+))x y;                            eop(:#)[x]=φ$siz x; 
 eop(:*) [x,y]=a2(φn"*"(*))x y;   eop(:*) [x]=frt x;       eop(:!)[x]=iot x;
 eop(:-) [x,y]=a2(φn"-"(-))x y;   eop(:-) [x]=a1(-^)x;     eop(:<)[x]=φ$gup x
 eop(:..)[x,y]=jin x y;           eop(:..)[x]=wow∘Ls$[x];
-eop o x=nyi$fmt"op:%s/%d"(sw o)(len x)
+eop o x=nyi$fmt"op:%s/%d"(σ o)(len x)
 
 a1::(E->M E)->E->M E; a1 f(Ls a)=Ls<$>trv(a1 f)a; a1 f a=f a
 
@@ -60,10 +60,10 @@ frt(Ls[])=nyi"*()";frt(Ls a)=wow$a!!0;frt x=such x; jin x y=wow∘Ls$ls x⊗ls y
 siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank";gup(Ls a)=R∘Ls$A∘N∘η<$>sortOn(a!!)[0..len a-1];gup _=Er">:typ"
 
 class PP α where pp::α->S
-instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);
+instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Io x)=σ x⊗":";
                       pp(Adv'd a x)=let p(Fun(Adv'd{}))=pp x;p _=cmv x in (p x⊗)∘π∘("/\\'"!!)∘fromEnum$a
-instance PP L   where pp(N(J x))=sw x;pp(N(O x))=sw x;pp(N(F x))=sw x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
-instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘sw$o
+instance PP L   where pp(N(J x))=σ x;pp(N(O x))=σ x;pp(N(F x))=σ x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
+instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘σ$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)=cmn x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
                       pp(Dic[][])="{}";--pp(Dic k v)=fmt"{%s}"∘semi∘zipWith((∘pp)∘(⊗)∘(⊗":")∘pp)k$v;
@@ -90,6 +90,6 @@ instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol ar
                               (1,Ass<$>frq[(4,avar),(1,smol arb`suchThat`nan)]<*>arb)]
                              shrink(Var _)=[Var"x"];shrink(Ap f x)=f:x⊗[p|p@(Ap _ a)<-Ap<$>gs f<*>gs x,a/=[]];
                              shrink x=sh x⊗gs x where sh(Ls x)=x;sh _=(∅)
-instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb)]
+instance Arbitrary Fun where arbitrary=frq[(5,Op<$>elms),(1,Adv'd<$>elms<*>arb),(1,Io<$>choose(0,9))]
                              shrink=π[Op(:+)]
 
