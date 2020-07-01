@@ -17,11 +17,13 @@ dam (AST.Dam _ a b _)=dyap<$>π fopm<*>kn a<*>ke b
 dap (AST.Dap _ a b v)=dyap<$> kv v <*>kn a<*>ke b
 map (AST.Map _   a f)=moap<$> kt f <*>ke a
 
-pdam(AST.Pdam _ z a _)=dyap<$>π fopm<*>kn a<*>maybe(π Nil)kpe z
-pdap(AST.Pdap _ z a v)=dyap<$> kv v <*>kn a<*>maybe(π Nil)kpe z
+pdam(AST.Pdam _    Nt a _)=dyap<$>π fopm<*>kn a<*>π Nil {-dyap<$>π fopm<*>kn a<*>maybe(π Nil)kpe z-}
+pdam(AST.Pdam _(Jt z) a _)=Com<$>(dyap<$>π fopm<*>kn a<*>π Nil)<*>kpe z
+pdap(AST.Pdap _    Nt a v)=dyap<$>kv v<*>kn a<*>π Nil
+pdap(AST.Pdap _(Jt z) a v)=Com<$>(dyap<$>kv v<*>kn a<*>π Nil)<*>kpe z
 
-pmap(AST.Pmap _ Nt Nt  (Jt b))=nyap<$>kv b
-pmap(AST.Pmap _(Jt z)(Jt f)Nt)=moap<$>kt f<*>zz where zz=kpe=<<prj z
+pmap(AST.Pmap _ Nt Nt  (Jt b))=kv b {-nyap<$>kv b-}
+pmap(AST.Pmap _(Jt z)(Jt f)Nt)=Com<$>kt f<*>zz {-moap<$>kt f<*>zz-} where zz=kpe=<<prj z
 
 ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
 kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?dict=<<prj x ? lit=<<prj x ? lam=<<prj x ?   nyi"ne"
