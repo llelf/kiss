@@ -726,6 +726,20 @@ tbl1
 (k (tabl (kv (var) (lit (symv))))) 
 
 ===
+#T
+===
+#[[]s:"hi"]
+---
+(k (map (op) (tabl (kv (var) (lit (chrv))))))
+
+===
+#[T]
+===
+#[[[]s:"hi"]]
+---
+(k (ap (op) (seq (tabl (kv (var) (lit (chrv)))))))
+
+===
 c1
 ===
 ("a";" ";"\n")

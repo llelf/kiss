@@ -26,7 +26,7 @@ _n:$=>C($.ap,$.parn,$.list,$.dict,$.tabl,$.lit,$.lam),
 parn:$=>S('(',$._k,    ')'),
 list:$=>S('(',O($.seq),')'),                 ap:$=>P(2,S(F('f',$._e),'[',F('a',O($.seq)),']')),
 dict:$=>S('{',O($.kvls),'}'),                                 kvls:$=>RS(F('kv',$.kv),$._semi),
-tabl:$=>S('[[',O($.kvls),']',$.kvls,']'),             kv:$=>S(F('k',$.var),':',F('v',O($._k))),
+tabl:$=>S('[','[',O($.kvls),']',$.kvls,']'),          kv:$=>S(F('k',$.var),':',F('v',O($._k))),
 
 lam: $=>S('{[',F('v',O($.args)),']',F('b',O($.seq)),'}'),                args:$=>RS($.var,';'),
 seq: $=>C(R1($._semi),S(R($._semi),S($._k,R(S($._semi,O($._k)))))),
@@ -42,7 +42,7 @@ var:$=>/[a-zA-Z][a-zA-Z0-9]*/, _semi:$=>C(/;\s*/,/\n\s+/), _ksep:$=>C(/;\s*/,/\n
 nb:$=>/\s+\/[^\n]+/,
 
 },conflicts:$=>[[$.pmap,$.pdap,$._e],[$.pass,$.ass],[$.pmap,$._e],[$.pmap,$.pdap],[$.dap,$.map],
-                [$.pmap,$._k,$._e],[$.parn,$.seq]],
+        [$.pmap,$._k,$._e],[$.map,$.pmap,$._e],[$.map,$.dap,$.pmap,$.pdap,$._e],[$.parn,$.seq]],
   externals:$=>[$._ugh],   inline:$=>[$._t,$.kvls],  supertypes:$=>[$._e,$._pe,$._n,$._v],
      extras:$=>[$.nb]
 })
