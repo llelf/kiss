@@ -51,7 +51,7 @@ pass(AST.Pass _ e Nt v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
 ap  (AST.Ap _ a f)|Jt a<-a=Ap<$>ke f<*>seq a|T=Ap<$>ke f<*>π[Nil]
 parn(AST.Parn _ x)=kk=<<prj x
 seq (AST.Seq _  x)=fx<∘>seq'∘toList$x where fx=(f=<<)∘L.group∘(<>[Nil])∘(Nil:) where f(Nil:n)=n; f x=x
-seq'=trv f where f::(AST.Kk:+:AST.Semi)_->(?)E; f x=Nil<$prj @AST.Semi x ? kk=<<prj @AST.Kk x
+seq'=trv f where f::(AST.SEMI:+:AST.Kk)_->(?)E; f x=Nil<$prj @AST.SEMI x ? kk=<<prj @AST.Kk x
 
 args Nt=π[]; args(Jt(AST.Args _ x))=trv var'∘toList$x
 
