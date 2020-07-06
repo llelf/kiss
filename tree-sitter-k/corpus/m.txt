@@ -4,7 +4,7 @@ ls
 (1 2
  3)
 ---
-(k (list (seq (lit (intv)) (lit (int1)))))
+(k (list (seq (lit (intv)) (SEMI) (lit (int1)))))
 
 ===
 ls*
@@ -27,7 +27,7 @@ nb2
 (1  /one
  2) /two
 ---
-(k (list (seq (lit (int1)) (nb) (lit (int1)))) (nb))
+(k (list (seq (lit (int1)) (nb) (SEMI) (lit (int1)))) (nb))
 
 ===
 nb3
@@ -56,9 +56,9 @@ di2.1
     d:42}}
 ---
 (k k:
- (dict   kv: (kv k: (var) v: (lit (var)))
+ (dict   kv: (kv k: (var) v: (lit (var)))    (SEMI)
          kv: (kv k: (var) v: (dict
-               kv:  (kv k: (var))
+               kv:  (kv k: (var))            (SEMI)
                kv:  (kv k: (var) v: (lit (int1)))))))
 
 ===
@@ -69,6 +69,6 @@ fun1
 ---
 (k k:
     (lam v: (args (var) (var))
-         b: (seq (ass v: (lit (var)) a: (lit (var)))
+         b: (seq (ass v: (lit (var)) a: (lit (var)))  (SEMI)
                  (dap a: (lit (var)) v: (op) b: (lit (var))))))
 

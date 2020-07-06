@@ -191,21 +191,21 @@ i+![i]
 ===
 *[0;1]
 ---
-(k (ap (op) (seq (lit (int1)) (lit (int1)))))
+(k (ap (op) (seq (lit (int1)) (SEMI) (lit (int1)))))
 
 ===
 *[i;+]
 ===
 *[0;+]
 ---
-(k (ap (op) (seq (lit (int1)) (op))))
+(k (ap (op) (seq (lit (int1)) (SEMI) (op))))
 
 ===
 *[i;i;i]
 ===
 *[0;1;2]
 ---
-(k (ap (op) (seq (lit (int1)) (lit (int1)) (lit (int1)))))
+(k (ap (op) (seq (lit (int1)) (SEMI) (lit (int1)) (SEMI) (lit (int1)))))
 
 ===
 v[dap;map]
@@ -213,7 +213,7 @@ v[dap;map]
 foo[2+3;!10]
 ---
 (k (ap (lit (var))
-       (seq (dap (lit (int1)) (op) (lit (int1)))
+       (seq (dap (lit (int1)) (op) (lit (int1)))  (SEMI)
             (map (op) (lit (int1))))))
 
 ===
@@ -221,7 +221,7 @@ foo[2+3;!10]
 ===
 +[;]
 ---
-(k (ap (op) (seq)))
+(k (ap (op) (seq (SEMI))))
 
 ===
 v[;i][i;][i]
@@ -229,8 +229,8 @@ v[;i][i;][i]
 foo[;1][0;][2]
 ---
 (k (ap (ap (ap (lit (var))
-               (seq (lit (int1))))
-           (seq (lit (int1))))
+               (seq (SEMI) (lit (int1))))
+           (seq (lit (int1)) (SEMI)))
    (seq (lit (int1)))))
 
 ===
@@ -253,7 +253,7 @@ foo[;1][0;][2]
 +/(2;3)
 ---
 (k (map (avd (op) (a))
-   (list (seq (lit (int1)) (lit (int1)))))) 
+   (list (seq (lit (int1)) (SEMI) (lit (int1)))))) 
 
 ===
 +//v
@@ -313,7 +313,7 @@ i/
 ===
 (1;2)
 ---
-(k (list (seq (lit (int1)) (lit (int1)))))
+(k (list (seq (lit (int1)) (SEMI) (lit (int1)))))
 
 ===
 v
@@ -473,7 +473,7 @@ I₁
 ===
 (1 0;0 1)
 ---
-(k (list (seq (lit (intv))
+(k (list (seq (lit (intv))  (SEMI)
               (lit (intv)))))
 
 ===
@@ -481,7 +481,7 @@ I₁
 ===
 (,0;0 1)
 ---
-(k (list (seq (map (op) (lit (int1)))
+(k (list (seq (map (op) (lit (int1)))  (SEMI)
               (lit (intv)))))
 
 ===
@@ -526,7 +526,7 @@ fseq
 ===
 {[a]a;a}
 ---
-(k (lam (args (var)) (seq (lit (var)) (lit (var)))))
+(k (lam (args (var)) (seq (lit (var)) (SEMI) (lit (var)))))
 
 ===
 i+I
@@ -613,7 +613,7 @@ v:+[..]
 x:+[2;2]
 ---
 (k k: (ass v: (lit (var))
-           a: (ap f: (op) a: (seq (lit (int1)) (lit (int1))))))
+           a: (ap f: (op) a: (seq (lit (int1)) (SEMI) (lit (int1))))))
 
 ===
 v:+
@@ -635,7 +635,7 @@ suc:1+
 ===
 +[a:1;b:2]
 ---
-(k (ap (op) (seq (ass (lit (var)) (lit (int1)))
+(k (ap (op) (seq (ass (lit (var)) (lit (int1)))   (SEMI)
                 (ass (lit (var)) (lit (int1)))))) 
 
 ===
@@ -677,9 +677,9 @@ amend
 ===
 @[x;0;:;1]
 ---
-(k (ap (op) (seq (lit (var))
-              (lit (int1))
-              (op)
+(k (ap (op) (seq (lit (var)) (SEMI)
+              (lit (int1))   (SEMI)
+              (op)           (SEMI)
               (lit (int1)))))
 
 ===
@@ -715,7 +715,7 @@ dct2
 ===
 {sum:+/; add::x+y}
 ---
-(k (dict (kv (var) (avd (op) (a)))
+(k (dict (kv (var) (avd (op) (a)))  (SEMI)
          (kv (var) (exp (dap (lit (var)) (op) (lit (var)))))))
 
 ===
@@ -744,7 +744,7 @@ c1
 ===
 ("a";" ";"\n")
 ---
-(k (list (seq (lit (chr1)) (lit (chr1)) (lit (chr1)))))
+(k (list (seq (lit (chr1)) (SEMI) (lit (chr1)) (SEMI) (lit (chr1)))))
 
 ===
 c2
