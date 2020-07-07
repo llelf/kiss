@@ -1,4 +1,20 @@
 ===
+42nl
+===
+42
+
+---
+(k (lit (int1)) (KSEP))
+
+===
+nl42
+===
+
+42
+---
+(k (KSEP) (lit (int1)))
+
+===
 ls
 ===
 (1 2
@@ -35,7 +51,7 @@ nb3
 +  /oh
 :+ /ok
 ---
-(k (op) (nb) (pexp (pmap (op))) (nb))
+(k (op) (nb) (KSEP) (pexp (pmap (op))) (nb))
 
 ===
 nb4
@@ -46,7 +62,7 @@ nb4
 3 /threeeeee
 
 ---
-(k (nb) (nb) (lit (int1)) (nb))
+(k (nb) (nb) (KSEP) (KSEP) (lit (int1)) (nb) (KSEP))
 
 ===
 di2.1

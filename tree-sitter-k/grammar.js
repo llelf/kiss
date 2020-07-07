@@ -1,9 +1,9 @@
 /* e:nve| te|ε-see| ad  n- e|n:e|:e  t:n v:tA|V n:e[E*]| (E)|(E*)|{[..]E}|{v:E..}|[[.]..]|lit:iIfFnNcCv
      dap|map|  pe |hocs: dam|ass|exp  /v  avd|     ap  |parn|list|  lam  |  dict |  tabl |            ?
- */                           A=alias; F=field; O=optional; C=choice;  R=repeat; R1=repeat1;
-                              S=seq; P=prec; D=P.dynamic; T=token, RS=(e,s)=>S(e,R(S(s,e)));
+ */                          A=alias, F=field, O=optional, C=choice,  R=repeat, R1=repeat1;
+/*(c)2020-now lelf; kparc */ S=seq, P=prec, D=P.dynamic, T=token, RS=(e,s)=>S(e,R(S(s,e)));
 module.exports=grammar({name:'k',
-                 rules:{k:$=>S(O($.nb),R($._ksep),F('k',$._k),R(S($._ksep,F('k',O($._k))))),
+                 rules:{k:$=>S(O($.nb),R($.KSEP),F('k',$._k), R(S($.KSEP,F('k',O($._k))))),
                        _k:$=>C(D(2,$._v),$._e,$._pe),
 
 _pe:$=>D(-1,C($.pass,$.pdap,$.pdam,$.pmap,$.pexp)),
@@ -38,7 +38,7 @@ sym1:$=>/`[\w.:]*/,               symv:$=>/(`[\w.]*)+/,
 chr1:$=>/"([^\\\"]|\\.)"/,        chrv:$=>C(/""/,/"([^\\\"]|\\.)+"/),
 
 io:$=>T(S(/\d/,':')),     op:$=>C('-',P(-1,':'),/[+*%!&|<>=~,^#_$?@.]/),      a:$=>/[\/\\\']:?/,
-var:$=>/[a-zA-Z][a-zA-Z0-9]*/,  SEMI:$=>C(/;\s*/,/\n\s+/), _ksep:$=>C(/;\s*/,/\n/),  _sp:$=>' ',
+var:$=>/[a-zA-Z][a-zA-Z0-9]*/,  SEMI:$=>C(/;\s*/,/\n\s+/),  KSEP:$=>C(/;\s*/,/\n/),  _sp:$=>' ',
 nb:$=>/\s+\/[^\n]+/,
 
 },conflicts:$=>[[$.pmap,$.pdap,$._e],[$.pass,$.ass],[$.pmap,$._e],[$.pmap,$.pdap],[$.dap,$.map],
