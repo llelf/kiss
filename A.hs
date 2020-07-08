@@ -12,4 +12,4 @@ data N=B B|J J|O O|F F deriving(Eq,Ord,Show);   data Adv=Fold|Scan|Each        d
 data Op=(:~)|(:!)|(:@)|(:#)|(:$)|(:%)|(:^)|(:&)|(:*)|(:-)|(:=)|(:--)|(:+)|(:..)|(:.)|(:<)|(:>)|(:?)|(:|)
  deriving(Eq,Ord,Enum,Read,Show,Bounded)
 
-data Ty=Ta TA|Tl TA|TL|TF|NT deriving(Eq,Ord,Show); data TA=Tj|To deriving(Eq,Ord,Show)
+data Ty=Ta TA|Tl TA|TL|TF|NT deriving(Eq,Ord,Show); data TA=Tj|To|Tb deriving(Eq,Ord,Show)

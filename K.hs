@@ -22,7 +22,7 @@ ev::E->M E; ev(Seq x)=last<$>trv ev x;ev(Ls x)=Ls∘rev<$>trv ev(rev x);ev(Ap f 
 ev(Cond[c,a,b])=do{i<-ev c;ev$if ist i then a else b};ev Cond{}=nyi"¬3.cond";ev(Var v)=getV v
 ev(Ass(Var v)e)=do{(s,_)<-getV' v;ev e>>=setV s v};ev(Ass _ _)=nyi"ass.cmlx";ev x=wow x
 
-ty::E->Ty;ty(A(N(O _)))=Ta To;ty(A(N(J _)))=Ta Tj;ty(Ls x)|[Ta t]<-nub∘sort$ty<$>x=Tl t|T=TL;ty(Fun _)=TF;ty _=NT
+ty::E->Ty;ty(A(N(O _)))=Ta To;ty(A(N(J _)))=Ta Tj;ty(A(N(B _)))=Ta Tb;ty(Ls x)|[Ta t]<-nub∘sort$ty<$>x=Tl t|T=TL;ty(Fun _)=TF;ty _=NT
 ist::E->B;ist(A(N x))=x/=0;ist(Ls[])=NO;ist Ls{}=T
 
 eap::E->[E]->M E; eap(Fun(Op o))a=eop o a;eap(Fun(Lam v e))a=elam v e a
@@ -64,8 +64,8 @@ instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(I
                       pp(Adv'd a x)=let p(Fun(Adv'd{}))=pp x;p _=cmv x in (p x⊗)∘π∘("/\\'"!!)∘fromEnum$a
 instance PP L   where pp(N(J x))=σ x;pp(N(O x))=σ x;pp(N(B x))=fmt"%db"∘fromEnum$x;pp(N(F x))=σ x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘σ$o
-instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
-                      pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)=cmn x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
+instance PP E   where{pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|Tl Tb<-ty x=(⊗"b")$head∘pp<$>s|T=ict" "$pp<$>s;
+                      pp(A l)=pp l;    pp Nil=(∅); pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)=cmn x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
                       pp(Dic[][])="{}";--pp(Dic k v)=fmt"{%s}"∘semi∘zipWith((∘pp)∘(⊗)∘(⊗":")∘pp)k$v;
                       pp(Dic k v)=pp$Ap(fop(:!))[Ls k,Ls v];
                       pp(Ap o@AO[x,Nil])|x/=Nil=cmn x⊕pp o;pp(Ap f a)|Nil∈a=psap f a;pp(Ap o@AO[x,y])=cmn x⊕pp o⊕prpf y;
