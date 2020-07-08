@@ -80,12 +80,12 @@ psap f x=fmt"%s[%s]"(cmv f)∘semi$pp<$>x
 ict=intercalate;semi=ict";";pr=fmt"(%s)";ppr=pr∘pp;esc::S->S;esc(c:s)|c∈"\"\n"='\\':c:esc s|T=c:esc s;esc _=[]
 
 arb::_=>Gen a;arb=arbitrary;frq=frequency;elms=elm[minBound..];smol q=sized$(resize??q)∘(`div`3);tiny=smol∘smol
-elm=elements;ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elm["x","y","foo"];asy=A∘Sy<∘>elm$π<$>"abc";gs=genericShrink
+elm=elements;alist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elm["x","y","foo"];asy=A∘Sy<∘>elm$π<$>"abc";gs=genericShrink
 aargs=frq[(3,π<$>smol a),(3,(∘π)∘(:)<$>smol a<*>smol a),(1,choose(3,5)>>=vectorOf??tiny a)]where a=frq[(7,arb),(1,π Nil)]
 adic=uncurry Dic∘unzip<∘>smol∘listOf$(,)<$>asy<*>(A<$>arb); nan(A N{})=NO;nan _=T
 
 instance Arbitrary L   where arbitrary=N<$>frq[(2,O<$>arb),(1,F<$>arb),(1,B<$>arb)]; shrink=π[N 0]
-instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,adic),(1,Fun<$>arb),
+instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,alist),(1,Ls<$>smol arb),(1,avar),(1,adic),(1,Fun<$>arb),
                               (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]<*>aargs),
                               (1,Ass<$>frq[(4,avar),(1,smol arb`suchThat`nan)]<*>arb)]
                              shrink(Var _)=[Var"x"];shrink(Ap f x)=f:x⊗[p|p@(Ap _ a)<-Ap<$>gs f<*>gs x,a/=[]];
