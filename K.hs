@@ -62,7 +62,7 @@ siz(Ls a)=R∘A∘N∘η∘len$a;siz _=Er"rank";gup(Ls a)=R∘Ls$A∘N∘η<$>so
 class PP α where pp::α->S
 instance PP Fun where pp(Op o)=pp o;pp(Lam a b)=fmt"{[%s]%s}"(semi a)(pp b);pp(Io x)=σ x⊗":";
                       pp(Adv'd a x)=let p(Fun(Adv'd{}))=pp x;p _=cmv x in (p x⊗)∘π∘("/\\'"!!)∘fromEnum$a
-instance PP L   where pp(N(J x))=σ x;pp(N(O x))=σ x;pp(N(F x))=σ x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
+instance PP L   where pp(N(J x))=σ x;pp(N(O x))=σ x;pp(N(B x))=fmt"%db"∘fromEnum$x;pp(N(F x))=σ x;pp(C c)=fmt"\"%c\""c;pp(Sy s)='`':s
 instance PP Op  where pp(:--)="_";pp(:..)=",";pp o=π∘(!!2)∘σ$o
 instance PP E   where{pp(A l)=pp l;  pp(Ls[x])=',':prpf x; pp x@(Ls s)|TL<-ty x=pr∘semi$pp<$>s|T=ict" "$pp<$>s;pp Nil=(∅);
                       pp(Fun f)=pp f;pp(Var v)=v;pp(Ass x e)=cmn x⊗":"⊗pp e;pp(Seq x)=semi$pp<$>x;
@@ -84,7 +84,7 @@ elm=elements;ilist=Ls<∘>(<∘>)A∘smol∘listOf$arb @L;avar=Var<$>elm["x","y"
 aargs=frq[(3,π<$>smol a),(3,(∘π)∘(:)<$>smol a<*>smol a),(1,choose(3,5)>>=vectorOf??tiny a)]where a=frq[(7,arb),(1,π Nil)]
 adic=uncurry Dic∘unzip<∘>smol∘listOf$(,)<$>asy<*>(A<$>arb); nan(A N{})=NO;nan _=T
 
-instance Arbitrary L   where arbitrary=N<$>frq[(2,O<$>arb),(1,F<$>arb)]; shrink=π[N 0]
+instance Arbitrary L   where arbitrary=N<$>frq[(2,O<$>arb),(1,F<$>arb),(1,B<$>arb)]; shrink=π[N 0]
 instance Arbitrary E   where arbitrary=frq[(4,A<$>arb),(2,ilist),(1,Ls<$>smol arb),(1,avar),(1,adic),(1,Fun<$>arb),
                               (2,Ap<$>frq[(5,Fun<$>arb),(1,arb)]<*>aargs),
                               (1,Ass<$>frq[(4,avar),(1,smol arb`suchThat`nan)]<*>arb)]
