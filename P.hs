@@ -5,8 +5,8 @@ import Prelude hiding(exp,map,seq);import Data.Functor.Identity;import Data.Func
 import qualified Data.Text as T;import qualified Data.Text.Encoding as T;import Data.Foldable; import Control.Applicative
 import A; import qualified AST; import TreeSitter.K; import AST.Unmarshal; import AST.Element;    import System.IO.Unsafe
 
-(∘)=(.);(<∘>)=fmap∘fmap;(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;seqA=sequenceA;π=pure;nyi=error∘("nyi:"<>)
-pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Either;σ=T.unpack
+(∘)=(.);(<∘>)=fmap∘fmap;(∈)=elem;(⊗)=(<>);(??)=flip;(?)=(<|>);infixl 0?;trv=traverse;seqA=sequenceA;nyi=error∘("nyi:"⊗)
+pattern T=True;pattern Nt=Nothing;pattern Jt x=Just x;type(?)=Maybe;type(+)=Either;σ=T.unpack;rev=reverse;π=pure;ρ=read
 
 ps ::S->(?)E;      ps""=π Nil; ps s=either(π Nt)k∘ps'$s
 ps'::S->S+AST.K(); ps' =unsafePerformIO∘parseByteString @AST.K @() tree_sitter_k∘T.encodeUtf8∘T.pack
@@ -26,22 +26,23 @@ pmap(AST.Pmap _ Nt Nt  (Jt b))=kv b {-nyap<$>kv b-}
 pmap(AST.Pmap _(Jt z)(Jt f)Nt)=Com<$>kt f<*>zz {-moap<$>kt f<*>zz-} where zz=kpe=<<prj z
 
 ke (AST.E      x)=  kn=<<prj x ?  kv=<<prj x ? map=<<prj x ? dap=<<prj x ? dam=<<prj x ? ass=<<prj x ? exp=<<prj x ? nyi"ke"
+lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?bit1=<<prj x ?bitv=<<prj x ?flt1=<<prj x ? var=<<prj x ?sym1=<<prj x ? nyi"n"
 kn (AST.N      x)=  ap=<<prj x ?parn=<<prj x ?list=<<prj x ?dict=<<prj x ? lit=<<prj x ? lam=<<prj x ?   nyi"ne"
-lit(AST.Lit  _ x)=int1=<<prj x ?intv=<<prj x ?flt1=<<prj x ? var=<<prj x ?sym1=<<prj x ? nyi"n"
 kpe(AST.Pe     x)=pmap=<<prj x ?pdap=<<prj x ?pass=<<prj x ?pdam=<<prj x ?    nyi"pe"
 kv (AST.V      x)=   v=<<prj x ? avd=<<prj x ?  io=<<prj x
 kk (AST.Kk   _ x)=  ke=<<prj x ? kpe=<<prj x
 
 k  (AST.K _ ks _)=(fx<$>)$Seq<∘>trv kk∘toList$ks where fx(Seq[x])=x;fx x=x
 
-v   (AST.Op    _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=read("(:"<>[c]<>")")
+v   (AST.Op    _ x)=π∘Fun∘Op∘pop∘T.head$x where pop::A.C->Op;pop '_'=(:--);pop ','=(:..);pop c=ρ("(:"⊗[c]⊗")")
 avd (AST.Avd _ a f)=Fun<∘>Adv'd<$>(π∘pad∘a'$a)<*>kt f where pad::A.C->Adv;pad '/'=Fold;pad '\\'=Scan;pad '\''=Each
 lam (AST.Lam _ b v)=Fun<∘>Lam<$>args v<*>Seq<$>(seq=<<b);   exp (AST.Exp   _ x)=Fun∘e2lam<$>ke x
 int1(AST.Int1  _ x)=π∘pint∘σ$x;                             intv(AST.Intv  _ x)=π∘Ls$pint<∘>words∘σ$x
+bit1(AST.Bit1  _ x)=π∘pbit∘nosuf∘σ$x;                       bitv(AST.Bitv  _ x)=π∘Ls$pbit∘π<∘>nosuf∘σ$x
 flt1(AST.Flt1  _ x)=π∘pflt∘σ$x;
-sym1(AST.Sym1  _ x)=π∘A∘Sy∘tail∘σ$x;                        io  (AST.Io _ x)=π∘Fun∘Io∘read∘π∘head∘σ$x
+sym1(AST.Sym1  _ x)=π∘A∘Sy∘tail∘σ$x;                        io  (AST.Io    _ x)=π∘Fun∘Io∘ρ∘π∘head∘σ$x
 
-pint=A∘N∘O∘read::S->E; pflt=A∘N∘F∘f::S->E where f x|('.':_)<-reverse x=read(x<>"0");f('-':x)=read("-0"<>x);f x=read('0':x)
+pbit,pint,pflt::S->E; pbit=A∘N∘B∘toEnum∘ρ;pint=A∘N∘O∘ρ;pflt=A∘N∘F∘f where f x|('.':_)<-rev x=ρ(x⊗"0");f('-':x)=ρ("-0"⊗x);f x=ρ('0':x)
 
 dict(AST.Dict   _  x _)=kv2d<∘>trv kv$x where kv(AST.Kv _ k v)=(,)<$>(A∘Sy<∘>var'$k)<*>maybe(π Nil)kk v
 list(AST.List      _ x)|Jt x<-x=Ls<$>seq x|T=π$Ls[]
@@ -50,11 +51,10 @@ pass(AST.Pass _ e Nt v)=Ass<$>kn v<*>kpe e; pass _=nyi"cmplx.pass"
 
 ap  (AST.Ap _ a f)|Jt a<-a=Ap<$>ke f<*>seq a|T=Ap<$>ke f<*>π[Nil]
 parn(AST.Parn _ x)=kk=<<prj x
-seq (AST.Seq _  x)=fx<∘>seq'∘toList$x where fx=(f=<<)∘L.group∘(<>[Nil])∘(Nil:) where f(Nil:n)=n; f x=x
+seq (AST.Seq _  x)=fx<∘>seq'∘toList$x where fx=(f=<<)∘L.group∘(⊗[Nil])∘(Nil:) where f(Nil:n)=n; f x=x
 seq'=trv f where f::(AST.SEMI:+:AST.Kk)_->(?)E; f x=Nil<$prj @AST.SEMI x ? kk=<<prj @AST.Kk x
 
-args Nt=π[]; args(Jt(AST.Args _ x))=trv var'∘toList$x
-
+args Nt=π[]; args(Jt(AST.Args _ x))=trv var'∘toList$x;                               nosuf=rev∘dropWhile(∈"ijfbo")∘rev
 var'(AST.Var _ x)=π∘σ$x; var=Var<∘>var'::_->(?)E; a'(AST.A _ x)=T.head x::C;  kv2d::[(E,E)]->E; kv2d=uncurry Dic∘unzip
 
 
