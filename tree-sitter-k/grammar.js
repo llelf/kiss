@@ -21,15 +21,16 @@ _e:$=>D(-1,C($.ass,$.dap,$.dam,$.map,$.exp,$._t)),
    dam:$=>    D(2,S(F('a',$._n),         F('v',A($._ugh,$.op)),R($._sp),F('b',$._e))),
    map:$=>    D(1,S(F('f',$._t),                               R($._sp),F('a',$._e))),
 
-_t:$=>C($._n,$._v),                 _v:$=>C($.avd,$.op,$.io), avd:$=>S(F('f',$._t),F('a',$.a)),
-_n:$=>C($.ap,$.parn,$.list,$.dict,$.tabl,$.lit,$.lam),
+_t:$=>C($._n,$._v),             _v:$=>C($.avd,$.op,$.io), avd:$=>S(F('f',$._t),F('a',$.a)),
+_n:$=>C($.ap,$.parn,$.list,$.dict,$.tabl,$.lit,$.lam,$.lan),
 
 parn:$=>S('(',$._k,    ')'),
-list:$=>S('(',O($.seq),')'),                 ap:$=>P(2,S(F('f',$._e),'[',F('a',O($.seq)),']')),
-dict:$=>S('{',O($.kvls),'}'),                                  kvls:$=>RS(F('kv',$.kv),$.SEMI),
-tabl:$=>S('[','[',O($.kvls),']',$.kvls,']'),          kv:$=>S(F('k',$.var),':',F('v',O($._k))),
+list:$=>S('(',O($.seq),')'),             ap:$=>P(2,S(F('f',$._e),'[',F('a',O($.seq)),']')),
+dict:$=>S('[',O($.kvls),']'),                              kvls:$=>RS(F('kv',$.kv),$.SEMI),
+tabl:$=>S('[','[',O($.kvls),']',$.kvls,']'),      kv:$=>S(F('k',$.var),':',F('v',O($._k))),
 
-lam: $=>S('{[',F('v',O($.args)),']',F('b',O($.seq)),'}'),                args:$=>RS($.var,';'),
+lam: $=>S('{[',F('v',O($.args)),']',F('b',O($.seq)),'}'),            args:$=>RS($.var,';'),
+lan: $=>S('{',F('b',O($.seq)),'}'),
 seq: $=>C(R1($.SEMI),S(R($.SEMI),S($._k,R(S($.SEMI,O($._k)))))),
 
 lit: $=>C($.int1,$.intv,$.flt1,$.fltv,$.sym1,$.symv,$.chr1,$.chrv,$.var), //--------move regex rubbish to lexer
@@ -43,7 +44,7 @@ var:$=>/[a-zA-Z][a-zA-Z0-9]*/,  SEMI:$=>C(/;\s*/,/\n\s+/),  KSEP:$=>C(/;\s*/,/\n
 nb:$=>/\s+\/[^\n]+/,
 
 },conflicts:$=>[[$.pmap,$.pdap,$._e],[$.pass,$.ass],[$.pmap,$._e],[$.pmap,$.pdap],[$.dap,$.map],
-        [$.pmap,$._k,$._e],[$.map,$.pmap,$._e],[$.map,$.dap,$.pmap,$.pdap,$._e],[$.parn,$.seq]],
+                [$.pmap,$._k,$._e],[$.map,$.pmap,$._e],[$.map,$.dap,$.pmap,$.pdap,$._e],[$.parn,$.seq]],
   externals:$=>[$._ugh],   inline:$=>[$._t,$.kvls],  supertypes:$=>[$._e,$._pe,$._n,$._v],
      extras:$=>[$.nb]
 })

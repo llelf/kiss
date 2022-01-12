@@ -701,22 +701,21 @@ dct0
 ===
 {}
 ---
-(k (dict))
+(k (lan))
 
 ===
 dct1
 ===
 {x:1}
 ---
-(k (dict (kv (var) (lit (int1)))))
+(k (lan (seq (ass (lit (var)) (lit (int1))))))
 
 ===
 dct2
 ===
 {sum:+/; add::x+y}
 ---
-(k (dict (kv (var) (avd (op) (a)))  (SEMI)
-         (kv (var) (exp (dap (lit (var)) (op) (lit (var)))))))
+()
 
 ===
 tbl1
@@ -730,7 +729,7 @@ tbl1
 ===
 #[[]s:"hi"]
 ---
-(k (map (op) (tabl (kv (var) (lit (chrv))))))
+()
 
 ===
 #[T]
@@ -776,7 +775,7 @@ i#[]
 ===
 0#[]
 ---
-(k k: (map f: (lit (int1)) a: (ap f: (op))))
+(k (dap (lit (int1)) (op) (dict)))
 
 ===
 wild0

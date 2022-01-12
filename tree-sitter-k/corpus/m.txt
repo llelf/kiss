@@ -72,10 +72,8 @@ di2.1
     d:42}}
 ---
 (k k:
- (dict   kv: (kv k: (var) v: (lit (var)))    (SEMI)
-         kv: (kv k: (var) v: (dict
-               kv:  (kv k: (var))            (SEMI)
-               kv:  (kv k: (var) v: (lit (int1)))))))
+ (lan b: (seq (ass v: (lit (var)) a: (lit (var))) (SEMI) (ass v: (lit (var)) a: (lan b: (seq (ass v: (lit (var))) (SEMI) (ass v: (lit (var)) a: (lit (int1)))))))))
+
 
 ===
 fun1
